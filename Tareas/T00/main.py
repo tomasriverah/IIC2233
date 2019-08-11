@@ -1,6 +1,9 @@
 import tablero as tb
 import parametros as pm
+import math
+import random
 import string
+
 
 
 def menu_de_inicio():
@@ -19,23 +22,43 @@ def menu_de_inicio():
 
         opcion = input()
 
-        if str.isdigit(opcion) == False:
+        if opcion not in ["0", "1", "2", "3"]:
             print("Ingrese numero valido")
             salir = 0
 
-        if opcion == 1:
+        elif opcion == 1:
             return (1)
-        if opcion == 1:
+        elif opcion == 1:
             return (2)
-        if opcion == 1:
+        elif opcion == 1:
             return (3)
-        if opcion == 0:
-            quit()0
+        elif opcion == 0:
+            quit()
 
+def crear_tablero(m, n):
 
+    cantidad_legos = math.ceil(m * n * pm.PROB_LEGO)
+    pre_tablero = []
+    tablero = []
 
+    for i in range(0, cantidad_legos):
+        pre_tablero.append("L")
 
-menu_de_inicio()
+    for i in range(0, m*n - cantidad_legos):
+        pre_tablero.append(" ")
 
-tablero = [[2,3,"L"], [2,4,0], [1,2,3]]
-tb.print_tablero(tablero)
+    random.shuffle(pre_tablero)
+
+    fila = []
+    contador = 0
+    for i in pre_tablero:
+        fila.append(i)
+        contador += 1
+        if contador == n:
+            tablero.append(fila)
+            fila = []
+            contador = 0
+
+    return tablero
+
+tb.print_tablero(crear_tablero(3,5))
