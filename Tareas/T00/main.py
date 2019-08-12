@@ -67,56 +67,71 @@ def crear_hidden_tablero(tablero):
 
     contador_fila = 0
     lista_prueba = []
+    hidden_tablero = []
     n = len(tablero)
     m = len(tablero[0])
 
 
     for fila in tablero:
-        contador_fila += 1
         contador_casillero = 0
         for casillero in fila:
-            contador_casillero +=1
             legos_colindantes = 0
 
-            if (tablero[contador_fila - 1])[contador_casillero - 1] == "L" \
-                    and contador_fila >= 1 and contador_casillero >= 1:
-                legos_colindantes += 1
-
-            if (tablero[contador_fila - 1])[contador_casillero] == "L" and \
-                    and contador_fila >= 1:
-                legos_colindantes += 1
-
-            if (tablero[contador_fila])[contador_casillero - 1] == "L" and \
-                    contador_casillero >= 1:
-        legos_colindantes += 1
-
-
-
-
-                if (tablero[contador_fila])[contador_casillero + 1] == "L" \
-                        contador_casillero + 1  <= m:
-                    legos_colindantes += 1
-                if (tablero[contador_fila + 1])[contador_casillero - 1] == "L":
-                    legos_colindantes += 1
-                if (tablero[contador_fila + 1])[contador_casillero] == "L":
-                    legos_colindantes += 1
-                if (tablero[contador_fila + 1])[contador_casillero + 1] == "L":
+            if contador_fila - 1 >= 0 and contador_casillero - 1 >= 0:
+                if tablero[contador_fila - 1][contador_casillero - 1] == "L":
                     legos_colindantes += 1
 
-                if (tablero[contador_fila - 1])[contador_casillero + 1] == "L" \
-                        and contador_fila >= 1 and contador_casillero <= m :
+            if contador_fila - 1 >= 0:
+                if tablero[contador_fila - 1][contador_casillero] == "L":
                     legos_colindantes += 1
 
+            if contador_fila - 1 >= 0 and contador_casillero + 2 <= m:
+                if tablero[contador_fila - 1][contador_casillero + 1] == "L":
+                    legos_colindantes += 1
 
+            if contador_casillero - 1 >= 0:
+                if tablero[contador_fila][contador_casillero - 1] == "L":
+                    legos_colindantes += 1
+
+            if contador_casillero + 2 <= m:
+                if tablero[contador_fila][contador_casillero + 1] == "L":
+                    legos_colindantes += 1
+
+            if contador_fila + 2 <= n and contador_casillero - 1 >= 0:
+                if tablero[contador_fila + 1][contador_casillero - 1] == "L":
+                    legos_colindantes += 1
+
+            if contador_fila + 2 <= n:
+                if tablero[contador_fila + 1][contador_casillero] == "L":
+                    legos_colindantes += 1
+
+            if contador_fila + 2 <= n and contador_casillero + 2 <= m:
+                if tablero[contador_fila + 1][contador_casillero + 1] == "L":
+                    legos_colindantes += 1
 
             lista_prueba.append(legos_colindantes)
+            contador_casillero += 1
 
-    return lista_prueba
+        contador_fila += 1
+
+    fila = []
+    contador = 0
+    hidden_tablero = []
+    for i in lista_prueba:
+        fila.append(i)
+        contador += 1
+        if contador == m:
+            hidden_tablero.append(fila)
+            fila = []
+            contador = 0
 
 
-board = crear_tablero(4,4)
+
+    return hidden_tablero
+
+
+board = crear_tablero(3,6)
 
 tb.print_tablero(board)
 print(board)
 print(crear_hidden_tablero(board))
-print(board[-1][-1])
