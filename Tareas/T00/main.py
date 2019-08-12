@@ -25,7 +25,7 @@ def menu_de_inicio():
             salir = 0
 
         elif opcion == 1:
-            return (1)
+            return 1
         elif opcion == 1:
             return (2)
         elif opcion == 1:
@@ -138,18 +138,18 @@ def crear_hidden_tablero(tablero):
 
     return hidden_tablero
 
+indices_jugados = []
+indices_lego = []
 
 def jugada(tablero, hidden_tablero):
 
+    tb.print_tablero(tablero)
     move = input("Ingrese una jugada (Formato Ej: 0A, 1C, etc...):")
     n = int(move[0])
     m = move[1]
 
     letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     m_num = letras.find(m)
-
-    indices_lego = []
-    indices_jugados = []
 
     contador_fila = 0
 
@@ -164,11 +164,10 @@ def jugada(tablero, hidden_tablero):
         contador_fila += 1
 
     if (n, m_num) in indices_lego:
+        print("ALOHAAAAAAAAAAA")
         return False
-
     elif (n, m_num) in indices_jugados:
-        return "Movimiento invalido"
-
+        return print("Movimiento invalido")
     else:
         n_legos = hidden_tablero[n][m_num]
         tablero[n][m_num] = n_legos
@@ -176,7 +175,7 @@ def jugada(tablero, hidden_tablero):
 
 def juego():
 
-    opcion = menu_de_inicio()
+    opcion = 1
 
     if opcion == 1:
         tamaño = input("Ingrese tamaño tablero (Ej: (3;3), (5;12), etc...)")
@@ -184,14 +183,21 @@ def juego():
         m = int(tamaño[3])
         tablero = crear_tablero(n,m)
         tablero_oculto = crear_hidden_tablero(tablero)
+        tablero_de_juego = []
+
+        for i in range(0, n):
+            fila = []
+            for j in range(0,m):
+                fila.append(" ")
+            tablero_de_juego.append(fila)
+        a=0
+        while a == 0:
+            b = jugada(tablero_de_juego, tablero_oculto)
+            if b == False:
+                a = 1
 
 
 
 
-board = crear_tablero(3, 3)
 
-tb.print_tablero(board)
-print(board)
-print(crear_hidden_tablero(board))
-
-jugada(board, crear_hidden_tablero(board))
+juego()
