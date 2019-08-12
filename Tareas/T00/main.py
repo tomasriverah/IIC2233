@@ -24,13 +24,13 @@ def menu_de_inicio():
             print("Ingrese numero valido")
             salir = 0
 
-        elif opcion == 1:
+        elif opcion == "1":
             return 1
-        elif opcion == 1:
-            return (2)
-        elif opcion == 1:
-            return (3)
-        elif opcion == 0:
+        elif opcion == "2":
+            return 2
+        elif opcion == "3":
+            return 3
+        elif opcion == "0":
             quit()
 
 
@@ -138,6 +138,8 @@ def crear_hidden_tablero(tablero):
 
     return hidden_tablero
 
+indices_jugados = []
+indices_lego = []
 
 def jugada(tablero, hidden_tablero):
 
@@ -149,8 +151,6 @@ def jugada(tablero, hidden_tablero):
     letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     m_num = letras.find(m)
 
-    indices_jugados = []
-    indices_lego = []
     contador_fila = 0
     for fila in hidden_tablero:
         contador_casillero = 0
@@ -160,8 +160,15 @@ def jugada(tablero, hidden_tablero):
             contador_casillero += 1
         contador_fila += 1
 
+
     if (n, m_num) in indices_lego:
-        print("You Lose")
+
+        for indice in indices_lego:
+            tablero[indice[0]][indice[1]] = "L"
+
+        tb.print_tablero(tablero)
+        print("****  Pierdes  :( ****")
+
         return False
     elif tablero[n][m_num] in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
         return print("**********************\n Movimiento invalido \n**********************")
@@ -169,7 +176,9 @@ def jugada(tablero, hidden_tablero):
         n_legos = hidden_tablero[n][m_num]
         tablero[n][m_num] = n_legos
         if check_ganador(tablero, hidden_tablero) == True:
-            print("Ganaste Wey!!")
+            tb.print_tablero(tablero)
+            print("¡¡¡GANASTE!!!")
+
         return tablero
 
 def check_ganador(tablero, tablero_escondido):
@@ -191,12 +200,11 @@ def check_ganador(tablero, tablero_escondido):
 
 def juego():
 
-    opcion = 1
-
-    if opcion == 1:
-        tamaño = input("Ingrese tamaño tablero (Ej: (3;3), (5;12), etc...)")
-        n = int(tamaño[1])
-        m = int(tamaño[3])
+    if menu_de_inicio() == 1:
+        tamaño = input("Ingrese tamaño tablero (Ej: 3;3, 5;12, etc...)")
+        x = tamaño.split(";")
+        n = int(x[0])
+        m = int(x[1])
         tablero = crear_tablero(n,m)
         tablero_oculto = crear_hidden_tablero(tablero)
         tablero_de_juego = []
