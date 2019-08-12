@@ -138,8 +138,6 @@ def crear_hidden_tablero(tablero):
 
     return hidden_tablero
 
-indices_jugados = []
-indices_lego = []
 
 def jugada(tablero, hidden_tablero):
 
@@ -151,27 +149,45 @@ def jugada(tablero, hidden_tablero):
     letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     m_num = letras.find(m)
 
+    indices_jugados = []
+    indices_lego = []
     contador_fila = 0
-
-    for fila in tablero:
+    for fila in hidden_tablero:
         contador_casillero = 0
         for casillero in fila:
-            if tablero[contador_fila][contador_casillero] == "L":
+            if hidden_tablero[contador_fila][contador_casillero] == "L":
                 indices_lego.append((contador_fila, contador_casillero))
-            if tablero[contador_fila][contador_casillero] in [0,1,2,3,4,5,6,7,8]:
-                indices_jugados.append((contador_fila, contador_casillero))
             contador_casillero += 1
         contador_fila += 1
 
     if (n, m_num) in indices_lego:
-        print("ALOHAAAAAAAAAAA")
+        print("You Lose")
         return False
-    elif (n, m_num) in indices_jugados:
-        return print("Movimiento invalido")
+    elif tablero[n][m_num] in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+        return print("**********************\n Movimiento invalido \n**********************")
     else:
         n_legos = hidden_tablero[n][m_num]
         tablero[n][m_num] = n_legos
+        if check_ganador(tablero, hidden_tablero) == True:
+            print("Ganaste Wey!!")
         return tablero
+
+def check_ganador(tablero, tablero_escondido):
+    contador_fila = 0
+    for fila in tablero_escondido:
+        contador_casillero = 0
+        for  casillero in fila:
+            if tablero_escondido[contador_fila][contador_casillero] == "L":
+                tablero_escondido[contador_fila][contador_casillero] = " "
+            contador_casillero += 1
+        contador_fila += 1
+
+    if tablero == tablero_escondido:
+        return True
+    else:
+        return False
+
+
 
 def juego():
 
