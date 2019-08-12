@@ -5,9 +5,7 @@ import random
 import string
 
 
-
 def menu_de_inicio():
-
     salir = 0
 
     while salir == 0:
@@ -35,6 +33,7 @@ def menu_de_inicio():
         elif opcion == 0:
             quit()
 
+
 def crear_tablero(n, m):
 
     cantidad_legos = math.ceil(m * n * pm.PROB_LEGO)
@@ -44,7 +43,7 @@ def crear_tablero(n, m):
     for i in range(0, cantidad_legos):
         pre_tablero.append("L")
 
-    for i in range(0, m*n - cantidad_legos):
+    for i in range(0, m * n - cantidad_legos):
         pre_tablero.append(" ")
 
     random.shuffle(pre_tablero)
@@ -59,18 +58,27 @@ def crear_tablero(n, m):
             fila = []
             contador = 0
 
-
-
     return tablero
 
-def crear_hidden_tablero(tablero):
 
+def crear_hidden_tablero(tablero):
     contador_fila = 0
     lista_prueba = []
-    hidden_tablero = []
+    indices_lego = []
     n = len(tablero)
     m = len(tablero[0])
 
+    for fila in tablero:
+        contador_casillero = 0
+        for casillero in fila:
+            if tablero[contador_fila][contador_casillero] == "L":
+                indices_lego.append((contador_fila, contador_casillero))
+
+            contador_casillero += 1
+        contador_fila += 1
+
+    contador_casillero = 0
+    contador_fila = 0
 
     for fila in tablero:
         contador_casillero = 0
@@ -125,13 +133,65 @@ def crear_hidden_tablero(tablero):
             fila = []
             contador = 0
 
-
+    for indice in indices_lego:
+        hidden_tablero[indice[0]][indice[1]] = "L"
 
     return hidden_tablero
 
 
-board = crear_tablero(3,6)
+def jugada(tablero, hidden_tablero):
+
+    move = input("Ingrese una jugada (Formato Ej: 0A, 1C, etc...):")
+    n = int(move[0])
+    m = move[1]
+
+    letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    m_num = letras.find(m)
+
+    indices_lego = []
+    indices_jugados = []
+
+    contador_fila = 0
+
+    for fila in tablero:
+        contador_casillero = 0
+        for casillero in fila:
+            if tablero[contador_fila][contador_casillero] == "L":
+                indices_lego.append((contador_fila, contador_casillero))
+            if tablero[contador_fila][contador_casillero] in [0,1,2,3,4,5,6,7,8]:
+                indices_jugados.append((contador_fila, contador_casillero))
+            contador_casillero += 1
+        contador_fila += 1
+
+    if (n, m_num) in indices_lego:
+        return False
+
+    elif (n, m_num) in indices_jugados:
+        return "Movimiento invalido"
+
+    else:
+        n_legos = hidden_tablero[n][m_num]
+        tablero[n][m_num] = n_legos
+        return tablero
+
+def juego():
+
+    opcion = menu_de_inicio()
+
+    if opcion == 1:
+        tamaño = input("Ingrese tamaño tablero (Ej: (3;3), (5;12), etc...)")
+        n = int(tamaño[1])
+        m = int(tamaño[3])
+        tablero = crear_tablero(n,m)
+        tablero_oculto = crear_hidden_tablero(tablero)
+
+
+
+
+board = crear_tablero(3, 3)
 
 tb.print_tablero(board)
 print(board)
 print(crear_hidden_tablero(board))
+
+jugada(board, crear_hidden_tablero(board))
