@@ -35,7 +35,7 @@ def menu_de_inicio():
         elif opcion == 0:
             quit()
 
-def crear_tablero(m, n):
+def crear_tablero(n, m):
 
     cantidad_legos = math.ceil(m * n * pm.PROB_LEGO)
     pre_tablero = []
@@ -54,11 +54,69 @@ def crear_tablero(m, n):
     for i in pre_tablero:
         fila.append(i)
         contador += 1
-        if contador == n:
+        if contador == m:
             tablero.append(fila)
             fila = []
             contador = 0
 
+
+
     return tablero
 
-tb.print_tablero(crear_tablero(3,5))
+def crear_hidden_tablero(tablero):
+
+    contador_fila = 0
+    lista_prueba = []
+    n = len(tablero)
+    m = len(tablero[0])
+
+
+    for fila in tablero:
+        contador_fila += 1
+        contador_casillero = 0
+        for casillero in fila:
+            contador_casillero +=1
+            legos_colindantes = 0
+
+            if (tablero[contador_fila - 1])[contador_casillero - 1] == "L" \
+                    and contador_fila >= 1 and contador_casillero >= 1:
+                legos_colindantes += 1
+
+            if (tablero[contador_fila - 1])[contador_casillero] == "L" and \
+                    and contador_fila >= 1:
+                legos_colindantes += 1
+
+            if (tablero[contador_fila])[contador_casillero - 1] == "L" and \
+                    contador_casillero >= 1:
+        legos_colindantes += 1
+
+
+
+
+                if (tablero[contador_fila])[contador_casillero + 1] == "L" \
+                        contador_casillero + 1  <= m:
+                    legos_colindantes += 1
+                if (tablero[contador_fila + 1])[contador_casillero - 1] == "L":
+                    legos_colindantes += 1
+                if (tablero[contador_fila + 1])[contador_casillero] == "L":
+                    legos_colindantes += 1
+                if (tablero[contador_fila + 1])[contador_casillero + 1] == "L":
+                    legos_colindantes += 1
+
+                if (tablero[contador_fila - 1])[contador_casillero + 1] == "L" \
+                        and contador_fila >= 1 and contador_casillero <= m :
+                    legos_colindantes += 1
+
+
+
+            lista_prueba.append(legos_colindantes)
+
+    return lista_prueba
+
+
+board = crear_tablero(4,4)
+
+tb.print_tablero(board)
+print(board)
+print(crear_hidden_tablero(board))
+print(board[-1][-1])
