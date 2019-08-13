@@ -138,6 +138,18 @@ def crear_hidden_tablero(tablero):
 
     return hidden_tablero
 
+
+def guardar_partida(tablero, hidden_tablero, nombre_usuario):
+
+    archivo = open(nombre_usuario + ".txt", "w+")
+    archivo.writelines(str(tablero)+ ";" + str(hidden_tablero))
+    archivo.close()
+
+def guardar_puntaje(nombre_usuario, puntaje):
+
+    archivo = open("puntaje.txt", "a+")
+    archivo.writelines(nombre_usuario + ":  " + str(puntaje))
+
 indices_jugados = []
 indices_lego = []
 
@@ -225,8 +237,6 @@ def juego():
                 a = 1
 
         respuesta = input("Te gustaría guardar la partida y el puntaje?(Y/N)")
-
-
-
+        guardar_partida(tablero, tablero_oculto, "tomas", 10)
 
 juego()
