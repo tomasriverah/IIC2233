@@ -169,7 +169,7 @@ def jugada(tablero, hidden_tablero):
         tb.print_tablero(tablero)
         print("****  Pierdes  :( ****")
 
-        return False
+        return False, tablero
     elif tablero[n][m_num] in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
         return print("**********************\n Movimiento invalido \n**********************")
     else:
@@ -178,7 +178,7 @@ def jugada(tablero, hidden_tablero):
         if check_ganador(tablero, hidden_tablero) == True:
             tb.print_tablero(tablero)
             print("¡¡¡GANASTE!!!")
-
+            return False, tablero
         return tablero
 
 def check_ganador(tablero, tablero_escondido):
@@ -196,6 +196,10 @@ def check_ganador(tablero, tablero_escondido):
     else:
         return False
 
+def cargar_tablero(nombre_usuario):
+
+    nombre_archivo = nombre_usuario.append("txt")
+    partida = open(nombre_archivo, "")
 
 
 def juego():
@@ -217,9 +221,10 @@ def juego():
         a=0
         while a == 0:
             b = jugada(tablero_de_juego, tablero_oculto)
-            if b == False:
+            if type(b) == tuple:
                 a = 1
 
+        respuesta = input("Te gustaría guardar la partida y el puntaje?(Y/N)")
 
 
 
