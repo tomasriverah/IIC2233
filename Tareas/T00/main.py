@@ -2,6 +2,7 @@ import tablero as tb
 import parametros as pm
 import math
 import random
+import os
 import string
 
 
@@ -14,7 +15,7 @@ def menu_de_inicio():
 
         print("Menú de Inicio:")
         print("[1] Nueva Partida")
-        print("[2] Cargar Ranking de puntajes")
+        print("[2] Cargar Partida")
         print("[3] Ver mejores puntajes")
         print("[0] Salir")
 
@@ -141,14 +142,34 @@ def crear_hidden_tablero(tablero):
 
 def guardar_partida(tablero, hidden_tablero, nombre_usuario):
 
-    archivo = open(nombre_usuario + ".txt", "w+")
+    if os.path.isdir("partidas") == False:
+        os.mkdir("partidas")
+
+    archivo = open("partidas/" + nombre_usuario + ".txt", "w+")
     archivo.writelines(str(tablero)+ ";" + str(hidden_tablero))
     archivo.close()
 
 def guardar_puntaje(nombre_usuario, puntaje):
 
     archivo = open("puntaje.txt", "a+")
-    archivo.writelines(nombre_usuario + ":  " + str(puntaje))
+    archivo.writelines(nombre_usuario + ":" + str(puntaje) + "\n")
+    archivo.close()
+
+def chequear_ranking():
+
+    lista_puntajes = []
+    archivo = open("puntaje.txt", "a+")
+    for linea in archivo:
+        linea.split(":")
+        lista_puntajes.append(linea[1])
+
+    lista_puntajes.sort()
+
+    for puntaje in lista_puntajes:
+        for linea in archivo:
+            if str(puntaje) in linea:
+                print(linea)
+
 
 indices_jugados = []
 indices_lego = []
@@ -216,7 +237,10 @@ def cargar_tablero(nombre_usuario):
 
 def juego():
 
+    puntaje = 0
+
     if menu_de_inicio() == 1:
+        nombre_usuario = input("Ingrese nombre de usuario: ")
         tamaño = input("Ingrese tamaño tablero (Ej: 3;3, 5;12, etc...)")
         x = tamaño.split(";")
         n = int(x[0])
@@ -233,10 +257,24 @@ def juego():
         a=0
         while a == 0:
             b = jugada(tablero_de_juego, tablero_oculto)
+            L = 0
+            descubierto = 0
+            for fila in tablero_de_juego:
+                for casilla in fila:
+                    if casilla in [0,1,2,3,4,5,6,7,8]:
+                        descubierto += 1
+                    if casilla == "L":
+                        L += 1
+            puntaje = descubierto * L * pm.POND_PUNT
             if type(b) == tuple:
                 a = 1
 
         respuesta = input("Te gustaría guardar la partida y el puntaje?(Y/N)")
-        guardar_partida(tablero, tablero_oculto, "tomas", 10)
 
+
+        if respuesta in ["y","Y"]:
+            guardar_partida(tablero, tablero_oculto, nombre_usuario)
+            guardar_puntaje(nombre_usuario, puntaje)
 juego()
+
+chequear_ranking()
