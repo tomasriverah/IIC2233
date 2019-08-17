@@ -5,7 +5,6 @@ import random
 import os
 import ast
 import copy
-import string
 
 
 def menu_de_inicio():
@@ -63,12 +62,13 @@ def crear_tablero(n, m):
 
     return tablero
 
+
 def menu_de_juego():
     a = 0
     while a == 0:
-        accion = input("[1] Descubrir casillero:\n[2] Guardar y volver al menu de inicio:"
-                           " \n[3]Volver al menu de inicio:\n")
-        if accion not in ["1", "2", "3"]:
+        accion = input("[1] Descubrir casillero:\n[2] Guardar \n[3] Guardar y volver al menu de in"
+                       "icio:\n[4] Volver al menu de inicio:\n")
+        if accion not in ["1", "2", "3", "4"]:
             print("Intenete nuevamente:")
         else:
             a = 1
@@ -168,22 +168,23 @@ def guardar_puntaje(nombre_usuario, puntaje):
     archivo.writelines(nombre_usuario + ":" + str(puntaje) + "\n")
     archivo.close()
 
-def takeSecond(elem):
-    return int(elem[1])
+def takesecond(elem):           ### Codigo de Internet referencia en Readme
+    return int(elem[1])         ###
+
 
 def chequear_ranking():
 
     lista_puntajes = []
     archivo = open("puntaje.txt", "r+")
 
-    lineas =  archivo.readlines()
+    lineas = archivo.readlines()
 
     for i in lineas:
         i = i.rstrip("\n")
         beta = i.split(":")
         lista_puntajes.append(beta)
 
-    lista_puntajes.sort(reverse=True ,key=takeSecond)
+    lista_puntajes.sort(reverse = True, key = takesecond)
     print("Ranking:")
 
     if len(lista_puntajes) > 10:
@@ -199,7 +200,7 @@ def chequear_ranking():
 indices_jugados = []
 indices_lego = []
 
-def jugada(tablero, hidden_tablero):
+def jugada(tablero, hidden_tablero, puntaje):
 
     tb.print_tablero(tablero)
     accion = menu_de_juego()
@@ -208,6 +209,8 @@ def jugada(tablero, hidden_tablero):
         return 2
     elif accion == 3:
         return 3
+    elif accion == 4:
+        return 4
 
     elif accion == 1:
         move = input("Ingrese una jugada (Formato Ej: 0A, 1C, etc...):")
@@ -243,6 +246,7 @@ def jugada(tablero, hidden_tablero):
             if check_ganador(tablero, hidden_tablero) == True:
                 tb.print_tablero(tablero)
                 print("¡¡¡GANASTE!!!")
+                print("Puntaje: " + str(puntaje))
                 return False, tablero
             return tablero
 
@@ -250,6 +254,7 @@ def jugada(tablero, hidden_tablero):
 def check_ganador(tablero, tablero_escondido):
     contador_fila = 0
     copia = copy.deepcopy(tablero_escondido)
+
     for fila in copia:
         contador_casillero = 0
         for  casillero in fila:
@@ -258,31 +263,36 @@ def check_ganador(tablero, tablero_escondido):
             contador_casillero += 1
         contador_fila += 1
 
-    if tablero == tablero_escondido:
+    if tablero == copia:
         return True
     else:
         return False
 
 def cargar_tablero(nombre_usuario):
 
+    partidas = os.listdir("partidas/")
     nombre_archivo = nombre_usuario + ".txt"
-    partida = open("partidas/" + nombre_archivo, "r+")
-    tableros = partida.readline()
+    if nombre_archivo in partidas:
+        partida = open("partidas/" + nombre_archivo, "r+")
+        tableros = partida.readline()
 
-    tableros = tableros.split(";")
+        tableros = tableros.split(";")
 
-    tablero = tableros[0]
-    tablero = tablero[:-1]
-    tablero = tablero[1:]
+        tablero = tableros[0]
+        tablero = tablero[:-1]
+        tablero = tablero[1:]
 
-    hidden_tablero = tableros[1]
-    hidden_tablero = hidden_tablero[:-1]
-    hidden_tablero = hidden_tablero[1:]
+        hidden_tablero = tableros[1]
+        hidden_tablero = hidden_tablero[:-1]
+        hidden_tablero = hidden_tablero[1:]
 
-    tablero = ast.literal_eval(tablero)
-    hidden_tablero = ast.literal_eval(hidden_tablero)
+        tablero = ast.literal_eval(tablero)
+        hidden_tablero = ast.literal_eval(hidden_tablero)
 
-    return [list(tablero), list(hidden_tablero)]
+        return [list(tablero), list(hidden_tablero)]
+
+    else:
+        return False
 
 def juego():
 
@@ -294,8 +304,8 @@ def juego():
 
         if respuesta == 1:
             nombre_usuario = input("Ingrese nombre de usuario: ")
-            tamaño = input("Ingrese tamaño tablero (Ej: 3;3, 5;12, etc...)")
-            x = tamaño.split(";")
+            tamano = input("Ingrese tamaño tablero (Ej: 3;3, 5;12, etc...)")
+            x = tamano.split(";")
             n = int(x[0])
             m = int(x[1])
             tablero = crear_tablero(n, m)
@@ -309,7 +319,7 @@ def juego():
                 tablero_de_juego.append(fila)
             a = 0
             while a == 0:
-                b = jugada(tablero_de_juego, tablero_oculto)
+                b = jugada(tablero_de_juego, tablero_oculto, puntaje)
 
                 L = 0
                 descubierto = 0
@@ -327,8 +337,13 @@ def juego():
                 if b == 2:
                     guardar_partida(tablero_de_juego, tablero_oculto, nombre_usuario)
                     guardar_puntaje(nombre_usuario, puntaje)
-                    a = 1
+
                 elif b == 3:
+                    guardar_partida(tablero_de_juego, tablero_oculto, nombre_usuario)
+                    guardar_puntaje(nombre_usuario, puntaje)
+                    a = 1
+
+                elif b == 4:
                     a = 1
 
                 elif type(b) == tuple:
@@ -345,42 +360,47 @@ def juego():
 
             nombre = input("Inserte nombre de usario de partida (sin .txt): ")
             tableros = cargar_tablero(nombre)
-            tablero_de_juego = tableros[0]
-            tablero_oculto = tableros[1]
+            if tableros == False:
+                print("Archivo Inexistente")
+                pass
+            else:
+                tablero_de_juego = tableros[0]
+                tablero_oculto = tableros[1]
 
-            print(tablero_de_juego)
-            print(tablero_oculto)
-            a = 0
-            while a == 0:
-                b = jugada(tablero_de_juego, tablero_oculto)
+                print(tablero_de_juego)
+                print(tablero_oculto)
+                a = 0
+                while a == 0:
+                    b = jugada(tablero_de_juego, tablero_oculto, puntaje)
 
-                L = 0
-                descubierto = 0
-                for fila in tablero_de_juego:
-                    for casilla in fila:
-                        if casilla in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
-                            descubierto += 1
-                for fila in tablero_oculto:
-                    for casilla in fila:
-                        if casilla == "L":
-                            L = + 1
+                    L = 0
+                    descubierto = 0
+                    for fila in tablero_de_juego:
+                        for casilla in fila:
+                            if casilla in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+                                descubierto += 1
+                    for fila in tablero_oculto:
+                        for casilla in fila:
+                            if casilla == "L":
+                                L = + 1
 
-                puntaje = descubierto * L * pm.POND_PUNT
+                    puntaje = descubierto * L * pm.POND_PUNT
 
-                if b == 2:
-                    guardar_partida(tablero_de_juego, tablero_oculto, nombre)
-                    guardar_puntaje(nombre, puntaje)
-                    a = 1
-                elif b == 3:
-                    a = 1
+                    if b == 2:
+                        guardar_partida(tablero_de_juego, tablero_oculto, nombre)
+                        guardar_puntaje(nombre, puntaje)
+                        a = 1
+                    elif b == 3:
+                        a = 1
 
-                elif type(b) == tuple:
-                    a = 1
-                    respuesta = input("Te gustaría guardar la partida y el puntaje?(Y/N)")
+                    elif type(b) == tuple:
+                        a = 1
+                        respuesta = input("Te gustaría guardar la partida y el puntaje?(Y/N)")
 
-                    if respuesta in ["y", "Y"]:
-                        guardar_partida(tablero_de_juego, tablero_oculto, nombre_usuario)
-                        guardar_puntaje(nombre_usuario, puntaje)
+                        if respuesta in ["y", "Y"]:
+                            guardar_partida(tablero_de_juego, tablero_oculto, nombre_usuario)
+                            guardar_puntaje(nombre_usuario, puntaje)
+
 
         if respuesta == 3:
             chequear_ranking()
