@@ -1,4 +1,4 @@
-import tablero as tb
+import  tablero as tb
 import parametros as pm
 import math
 import random
@@ -196,7 +196,6 @@ def chequear_ranking():
             print(str(i + 1) + ".- " + lista_puntajes[i][0] + ": " + lista_puntajes[i][1])
 
 
-
 indices_jugados = []
 indices_lego = []
 
@@ -236,6 +235,8 @@ def jugada(tablero, hidden_tablero, puntaje):
 
             tb.print_tablero(tablero)
             print("****  Pierdes  :( ****")
+            print("Puntaje: " + str(puntaje))
+
 
             return False, tablero
         elif tablero[n][m_num] in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
@@ -268,6 +269,7 @@ def check_ganador(tablero, tablero_escondido):
     else:
         return False
 
+
 def cargar_tablero(nombre_usuario):
 
     partidas = os.listdir("partidas/")
@@ -293,6 +295,7 @@ def cargar_tablero(nombre_usuario):
 
     else:
         return False
+
 
 def juego():
 
