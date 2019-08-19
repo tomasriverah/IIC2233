@@ -1,102 +1,74 @@
-# Tarea X: Nombre de la tarea :school_satchel:
+# Tarea 1: DCCivilization
+
+## Consideraciones generales 
+* El juego comienza bien, puede recolectar, crear personajes y edificios, todos con las condiciones necesarias para realizarlo (ejemplo, crear ayudante cuando hay DCCowork, o crear un edificio en los turnos correspondientes). También puede cargar y guardar partidas.
+
+* Se puede atacar, pero en esta funcionalidad no elimina a una civilización si su centro urbano es destruido, por lo que el programa se cae si una civilización es destruida, esto se debe a que su centro urbano pasará a ser ```Nonetype``` pero la civilización en si no es eliminada de los cálculos del juego.
+
+* Por otra parte la interacción por consola no presenta los resultados de los ataques, tanto si el usuario ataca, o si otra civilización ataca al usuario. En esta misma línea, no todos los inputs son aprueba de errores y por último, se tiene la opción de mostrar estadísticas, pero estas no pueden ser ordenadas por el "poder de ataque" o "poder de defensa" de cada civilización.
+
+* En cuanto a las bonificaciones, tanto por el líder como por descubrimiento científico, están casi todas implementadas, **excepto** la reparación de murallas en la civilización La Comarca.
+
+* En la verificación de las diferentes victorias, están implementadas, **excepto** la victoria por dominación; esto por el mismo problema de la función atacar, que no se eliminan las civilizaciones sin centro urbano.
+
+### Cosas implementadas y no implementadas 
+
+* **Parte Civilizaciones**:
+    * **Parte Recursos**: Hecha completa
+    * **Parte Personas**: Hecha completa
+    * **Parte Edificios**: Hecha completa
+    * **Parte Líderes**: Me faltó implementar el bonus de El Gran Polea de reparar murallas
+* **Parte Funcionalidades**:
+    * **Parte Ataque y defensa**: Me faltó implementar la eliminación de las civilizaciones cuando su centro urbano es destruido
+    * **Parte Investigación de tecnologías**: Hecha completa
+    * **Parte Estado del sistema**: Me faltó que las estadísticas del sistema se puedan ordenar de acuerdo a poder de ataque y a poder de defensa
+    * **Parte Término del juego**: Me faltó que se verificará la victoria por dominación, dado que en la parte ataque y defensa no se eliminan las civilizaciones.
+* **Parte Interacción por consola**: Me faltó mostrar los resultados de los ataques y no todos los inputs son aprueba de errores
+
+## Ejecución
+El módulo principal de la tarea a ejecutar es  ```main.py```.
 
 
-Un buen ```README.md``` puede marcar una gran diferencia en la facilidad con la que corregimos una tarea, y consecuentemente cómo funciona su programa, por lo en general, entre más ordenado y limpio sea este, mejor será 
-
-Para nuestra suerte, GitHub soporta el formato [MarkDown](https://es.wikipedia.org/wiki/Markdown), el cual permite utilizar una amplia variedad de estilos de texto, tanto para resaltar cosas importantes como para separar ideas o poner código de manera ordenada ([pueden ver casi todas las funcionalidades que incluye aquí](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet))
-
-Un buen ```README.md``` no tiene por que ser muy extenso tampoco, hay que ser **concisos** (a menos que lo consideren necesario) pero **tampoco pueden** faltar cosas. Lo importante es que sea claro y limpio 
-
-**Dejar claro lo que NO pudieron implementar y lo que no funciona a la perfección. Esto puede sonar innecesario pero permite que el ayudante se enfoque en lo que sí podría subir su puntaje.**
-
-## Consideraciones generales :octocat:
-
-<Descripción de lo qué hace y qué **_no_** hace la tarea que entregaron junto
-con detalles de último minuto y consideraciones como por ejemplo cambiar algo
-en cierta línea del código o comentar una función>
-
-### Cosas implementadas y no implementadas :white_check_mark: :x:
-
-* Parte <X<sub>1</sub>>: Hecha completa
-* Parte <X<sub>2</sub>>: Me faltó hacer <insertar qué cosa faltó>
-    * Parte <X<sub>2.1</sub>>: Hecha completa <insertar qué cosa faltó>
-    * Parte <X<sub>2.2</sub>>: Me faltó hacer <insertar qué cosa faltó>
-
-    ...
-
-* Parte <X<sub>3</sub>>: Me faltó hacer <insertar qué cosa faltó>
-
-...
-
-* Parte <X<sub>n</sub>>: Me faltó hacer <insertar qué cosa faltó>
-
-## Ejecución :computer:
-El módulo principal de la tarea a ejecutar es  ```archivo.py```
-
-
-## Librerías :books:
+## Librerías
 ### Librerías externas utilizadas
-La lista de librerías externas que utilicé fue la siguiente:
+La lista de librerías externas que utilicé fueron las siguientes:
 
-1. ```librería_1```-> ```función() / módulo```
-2. ```librería_2```-> ```función() / módulo``` (debe instalarse)
-
-...
+1. ```random```: ```randit()```, ```choice()```
+2. ```os```: ```listdir()``` 
+3. ```collections``` : ```deque()```
+4. ```abc```: ```ABC```, ```abstractmethod```
 
 ### Librerías propias
 Por otro lado, los módulos que fueron creados fueron los siguientes:
 
-1. ```librería_1```-> Contine a ```ClaseA```, ```ClaseB```, (ser general, tampoco es necesario especificar cada una)...
-2. ```librería_2```-> Hecha para <insertar descripción **breve** de lo que hace o qué contiene>
+1. ```Civilizaciones```: contiene a ```Comarca```, ```Cobreloa```, ```DCC```
+2. ```Personas```: contiene a  ```Trabajador```, ```Soldado```, ```Ayudante``` 
+3. ```juego```: contiene las funcionalidades básicas del juego, como ```cargar_partida_nueva()```, ```cargar_partida_existeste()```, etc.
+4. ```funciones_juego```: este módulo contiene variadas funciones que se utilizan en el módulo ```juego```
+5. ```funciones_main_civilizaciones```: este módulo también contiene variadas funciones que se utilizan en los módulos ```Civilizaciones``` y ```main```
+6. ```buildings```: contiene a ```CentroUrbano```, ```Cuartel```, ```DCCowork```, ```Muralla```
 
-...
-
-## Supuestos y consideraciones adicionales :thinking:
+## Supuestos y consideraciones adicionales
 Los supuestos que realicé durante la tarea son los siguientes:
 
-1. <Descripción/consideración 1 y justificación del por qué es válido/a> 
-2. <Descripción/consideración 2 y justificación del por qué es válido/a>
+1. El orden de los turnos de la CPU dependerá del orden en que esté el archivo ```acciones.csv```, esto porque el id de cada civilización no indica el orden de ejecución del turno, por lo que para hacerlo más sencillo, lo programé para que siguiera el orden del archivo entregado.
+2. Al momento de crear personajes, si es posible crearlos a todos, el programa lo hará, en caso contrario indicará al usuario que no se puede crear esa cantidad de personajes y le pedirá un nuevo número. Esto por simplicidad y para que el usuario sepa cuantos personajes está creando. Además si se pide crear 6 personajes y faltan 3 para completar la máxima población, el programa no permite la creación de ningúno.
+3. En la revisión de las acciones pendientes, esta se hace al final del turno del usuario, tanto cuando termina el turno y el juego sigue como cuando decide salir y guardar. Esto es para que el contador de turnos se mantenga consistente con las acciones pendientes y para que al cargar una partida las acciones pendientes de la CPU se hayan realizado.
 
-...
-
-PD: <una última consideración (de ser necesaria) o comentario hecho anteriormente que se quiera **recalcar**>
+4. Al comienzo de cada turno, tanto del usuario como de la CPU, se revisan los puntos de tecnología, esto es para que sea correspondiente que en cada turno se los puntos de tecnología vayan aumentando.
+5. Al momento de crear murallas, se permite que el usuario cree más de una a la vez. Esto es porque pueden haber tantas murallas como lo permitan los recursos y los trabajadores, así no tiene que crear 5 veces una muralla, sino que pueda crear 5 de una vez (como con los personajes).
+6. Cuando se guarda una partida, si se ingresa un nombre que ya tenía una partida guardada asociada, esta se sobreescribe. Esto es para que sea más real y no hayan muchas carpetas que al final tengan progresos de la misma partida.
+7. Cuando el DCC destruye una civilización y se reparten sus ayudantes, estos no tendrán la mejora de IQ que entrega el DCC.
+8. Si un trabajador está 'ocupado' y la civilización es atacada, éste también forma parte de la defensa y si es destruido, la acción que estaba haciendo se termina igual.
 
 
 -------
 
 
 
-**EXTRA:** si van a explicar qué hace especificamente un método, no lo coloquen en el README mismo. Pueden hacerlo directamente comentando el método en su archivo. Por ejemplo:
 
-```python
-class Corrector:
-
-    def __init__(self):
-          pass
-
-    # Este método coloca un 6 en las tareas que recibe
-    def corregir(self, tarea):
-        tarea.nota  = 6
-        return tarea
-```
-
-Si quieren ser más formales, pueden usar alguna convención de documentación. Google tiene la suya, Python tiene otra y hay muchas más. La de Python es la [PEP287, conocida como reST](https://www.python.org/dev/peps/pep-0287/). Lo más básico es documentar así:
-
-```python
-def funcion(argumento):
-    """
-    Mi función hace X con el argumento
-    """
-    return argumento_modificado
-```
-Lo importante es que expliquen qué hace la función y que si saben que alguna parte puede quedar complicada de entender o tienen alguna función mágica usen los comentarios/documentación para que el ayudante entienda sus intenciones.
-
-## Referencias de código externo :book:
+## Referencias de código externo 
 
 Para realizar mi tarea saqué código de:
-1. (link de código): este hace X cosa y está implementado en el archivo (nombre.py) en las líneas (número de líneas) y hace (explicación breve de que hace)
-
-
-
-## Descuentos
-La guía de descuentos se encuentra [link](https://github.com/IIC2233/syllabus/blob/master/Tareas/Descuentos.md).
+1. https://stackabuse.com/creating-and-deleting-directories-with-python/ : este permite crear la carpeta que contendrá el juego al momento de guardar la partida, y si la carpeta existe, entonces hace ```pass``` y permite que se guarden en ella los archivos. Está implementado en el archivo juego.py en las líneas 72-75.
+2. https://es.stackoverflow.com/questions/24278/c%C3%B3mo-#listar-todos-los-archivos-de-una-carpeta-usando-python : este indica si una carpeta o un archivo está en un directorio, está implementado en el archivo funciones.py en las líneas 311-317.
