@@ -75,6 +75,7 @@ def menu_de_juego():
 
     return int(accion)
 
+
 def crear_hidden_tablero(tablero):
     contador_fila = 0
     lista_prueba = []
@@ -167,6 +168,7 @@ def guardar_puntaje(nombre_usuario, puntaje):
     archivo = open("puntaje.txt", "a+")
     archivo.writelines(nombre_usuario + ":" + str(puntaje) + "\n")
     archivo.close()
+
 
 def takesecond(elem):           ### Codigo de Internet referencia en Readme
     return int(elem[1])         ###
