@@ -13,13 +13,13 @@ def resumen_actual(ayudantes, alumnos):
     print(f"Ayudantes restantes: {len(ayudantes)}")
 
     for ayudante in ayudantes:
-        if "Nuevo" in ayudante:
+        if "Nuevo" in ayudante[0]:
             nivel_1 += 1
-        if "Mentor" in ayudante:
+        if "Mentor" in ayudante[0]:
             nivel_2 += 1
-        if "Jefe" in ayudante:
+        if "Jefe" in ayudante[0]:
             nivel_3 += 1
-        if "Chief Tamburini" in ayudante:
+        if "Chief Tamburini" in ayudante[0]:
             nivel_4 += 1
 
     print(f"Alumnos restantes: {len(alumnos)}")
@@ -31,6 +31,5 @@ def resumen_actual(ayudantes, alumnos):
 
 def stock_comida(alumnos):
     # Completar
-    
 
     pass
