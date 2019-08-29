@@ -51,12 +51,29 @@ def simular_batalla(alumnos, ayudantes):
 
     while PISOS and alumnos:
         # Mientras queden pisos y alumnos para distraer
+
         piso_actual = PISOS[0]
-        ayudantes_del_piso = None  # Debes obtener los ayudantes del piso
+        ayudantes_del_piso = []  # Debes obtener los ayudantes del piso
+        for ayudante in ayudantes:
+            if piso_actual == 'Piso -1':
+                if "Nuevo" in ayudante[0]:
+                    ayudantes_del_piso.append(ayudante)
+            if piso_actual == 'Piso -2':
+                if "Mentor" in ayudante[0]:
+                    ayudantes_del_piso.append(ayudante)
+            if piso_actual == 'Piso -1':
+                if "Jefe" in ayudante[0]:
+                    ayudantes_del_piso.append(ayudante)
+            if piso_actual == 'Piso -1':
+                if "Chief Tamburini" in ayudante[0]:
+                    ayudantes_del_piso.append(ayudante)
+
+
+
         while ayudantes_del_piso:
             # Mientras hayan ayudantes en el piso
-            ayudante_defensor = None  # Debes obtener el ayudante que le toca defender
-            alumno_atacante = None  # Debes obtener el alumno que le toca distraer
+            ayudante_defensor = ayudantes_del_piso.pop()  # Debes obtener el ayudante que le toca defender
+            alumno_atacante = alumnos.pop()  # Debes obtener el alumno que le toca distraer
             while not distraer(alumno_atacante, ayudante_defensor):
                 # Si no se logró distraer el ayudante con el alumno actual,
                 # se debe mandar a la casa al alumno

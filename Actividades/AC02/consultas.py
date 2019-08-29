@@ -30,6 +30,11 @@ def resumen_actual(ayudantes, alumnos):
     print(f"Nivel -4: {nivel_4}")
 
 def stock_comida(alumnos):
-    # Completar
+
+    comidas = {}
+
+    for alumno in alumnos:
+        for comida in alumno[]
+
 
     pass
