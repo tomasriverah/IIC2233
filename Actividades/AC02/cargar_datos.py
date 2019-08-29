@@ -27,7 +27,8 @@ def cargar_alumnos(ruta_archivo_alumnos):
     stack_alumnos = []
     for alumno in alumnos:
         nuevo = alumno.strip("\n")
-        stack_alumnos.append(nuevo)
+        alumno2 = nuevo.split(";")
+        stack_alumnos.append(set(alumno2))
 
     return stack_alumnos
 
@@ -40,10 +41,15 @@ def cargar_ayudantes(ruta_archivo_ayudantes):
     ayudantes = open(ruta_archivo_ayudantes, "r", encoding="utf-8")
     stack_ayudantes = []
     for ayudante in ayudantes:
-        nuevo = ayudante.strip("\n")
-        stack_ayudantes.append(nuevo)
+        sin_salto = ayudante.strip("\n")
+        ayudante2 = sin_salto.split(";")
+        ayudante_final = [set(ayudante2), []]
+        stack_ayudantes.append(ayudante_final)
 
     return stack_ayudantes
 
+alumnos = cargar_alumnos("bases_datos/alumnos.csv")
 
-print(cargar_alumnos("bases_datos/alumnos.csv"))
+print(alumnos[0])
+
+
