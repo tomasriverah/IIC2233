@@ -27,8 +27,14 @@ Aquí debes completar las funciones propias de Acciones en DCCampal
 
 
 def distraer(alumno, ayudante):
-    # Completar
-    pass
+
+    for comida in almumno[1]:
+        if comida in ayudante[1]:
+            alumno[1].discard(comida)
+            return True
+
+    return False
+
 
 
 def simular_batalla(alumnos, ayudantes):

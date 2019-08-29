@@ -29,7 +29,7 @@ def cargar_alumnos(ruta_archivo_alumnos):
         nuevo = alumno.strip("\n")
         alumno2 = nuevo.split(";")
         comidas = alumno2[1].split(",")
-        stack_alumnos.append([alumno2[0], comidas])
+        stack_alumnos.append([alumno2[0], set(comidas)])
 
     return stack_alumnos
 
