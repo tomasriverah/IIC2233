@@ -3,109 +3,109 @@
 
 AUTOMOVIL = {
     'CHASIS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'CARROCERIA': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'RUEDAS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'MOTOR': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'ZAPATILLAS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'PESO': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     }
 }
 
 TRONCOMOVIL = {
     'CHASIS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'CARROCERIA': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'RUEDAS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'MOTOR': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'ZAPATILLAS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'PESO': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     }
 }
 
 MOTOCICLETA = {
     'CHASIS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'CARROCERIA': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'RUEDAS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'MOTOR': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'ZAPATILLAS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'PESO': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     }
 }
 
 BICICLETA = {
     'CHASIS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'CARROCERIA': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'RUEDAS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'MOTOR': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'ZAPATILLAS': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     },
     'PESO': {
-        'MIN': None,
-        'MAX': None
+        'MIN': 1,
+        'MAX': 10
     }
 }
 
@@ -114,24 +114,24 @@ BICICLETA = {
 
 MEJORAS = {
     'CHASIS': {
-        'COSTO': None,
-        'EFECTO': None
+        'COSTO': 10,
+        'EFECTO': 5
     },
     'CARROCERIA': {
-        'COSTO': None,
-        'EFECTO': None
+        'COSTO': 10,
+        'EFECTO': 5
     },
     'RUEDAS': {
-        'COSTO': None,
-        'EFECTO': None
+        'COSTO': 10,
+        'EFECTO': 5
     },
     'MOTOR': {
-        'COSTO': None,
-        'EFECTO': None
+        'COSTO': 10,
+        'EFECTO': 5
     },
     'ZAPATILLAS': {
-        'COSTO': None,
-        'EFECTO': None
+        'COSTO': 10,
+        'EFECTO': 5
     }
 }
 
@@ -148,7 +148,7 @@ EQUIPOS = {
             'MIN': 36,
             'MAX': 55
         },
-        'PERSONALIDAD': "precavido"
+        'PERSONALIDAD': "PRECAVIDO"
     },
     'HIBRIDOS': {
         'CONTEXTURA': {
@@ -159,7 +159,7 @@ EQUIPOS = {
             'MIN': 20,
             'MAX': 34
         },
-        'PERSONALIDAD': None
+        'PERSONALIDAD': "HALF"
     },
     'DOCENCIOS': {
         'CONTEXTURA': {
@@ -170,10 +170,12 @@ EQUIPOS = {
             'MIN': 4,
             'MAX': 10
         },
-        'PERSONALIDAD': "osado"
+        'PERSONALIDAD': "OSADO"
     }
 }
 
+
+NUMEROEQUIPO = {"1": "TAREOS", "2": "DOCENCIOS","3": "HIBRIDOS",}
 
 # Las constantes de las formulas
 
