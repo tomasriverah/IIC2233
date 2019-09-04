@@ -14,4 +14,4 @@
 * Para poblar el programa se usarán las clases ***pistas***, ***contrincantes*** y ***vehiculos***, la ultima teniendo 4 subclases que representan a cada tipo de vehículo.
 * Para el jugador tambien habrá una clase piloto la cual guardará los atributos de este y tendra los metodos que este pueda usar.
 
-Disclaimer, perdón por la pobreza del diagrama pero no tengo del todo claro como funcionará mi programa.
+Disclaimer, perdón por la pobreza del diagrama pero no tengo 100% claro el detalle de como funcionará mi programa.
