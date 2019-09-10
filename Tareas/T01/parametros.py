@@ -1,7 +1,7 @@
 
 # Valores máximos y mínimos de las partes y el peso de los vehículos
 
-AUTOMOVIL = {
+AUTOMÓVIL = {
     'CHASIS': {
         'MIN': 1,
         'MAX': 10
@@ -28,7 +28,7 @@ AUTOMOVIL = {
     }
 }
 
-TRONCOMOVIL = {
+TRONCOMÓVIL = {
     'CHASIS': {
         'MIN': 1,
         'MAX': 10
@@ -205,7 +205,8 @@ PATHS = {
     'PISTAS': "pistas.csv",
     'CONTRINCANTES': "contrincantes.csv",
     'PILOTOS': "pilotos.csv",
-    'VEHICULOS': "vehiculos.csv",
+    'VEHICULOS': "vehículos.csv",
+    'COMPRA' : "compra_vehículos.csv"
 }
 
 
