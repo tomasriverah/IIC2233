@@ -180,23 +180,23 @@ NUMEROEQUIPO = {"1": "TAREOS", "2": "DOCENCIOS","3": "HIBRIDOS",}
 # Las constantes de las formulas
 
 # Velocidad real
-VELOCIDAD_MINIMA = None
+VELOCIDAD_MINIMA = 10
 
 # Velocidad intencional
-EFECTO_OSADO = None
-EFECTO_PRECAVIDO = None
+EFECTO_OSADO = 10
+EFECTO_PRECAVIDO = 5
 
 # Dificultad de control del vehículo
-PESO_MEDIO = None
-EQUILIBRIO_PRECAVIDO = None
+PESO_MEDIO = 10
+EQUILIBRIO_PRECAVIDO = 10
 
 # Tiempo pits
-TIEMPO_MINIMO_PITS = None
-VELOCIDAD_PITS = None
+TIEMPO_MINIMO_PITS = 5
+VELOCIDAD_PITS = 1
 
 # Experiencia por ganar
-BONIFICACION_PRECAVIDO = None
-BONIFICACION_OSADO = None
+BONIFICACION_PRECAVIDO = 10
+BONIFICACION_OSADO = 10
 
 
 # Paths de los archivos
@@ -209,6 +209,13 @@ PATHS = {
     'COMPRA' : "compra_vehículos.csv"
 }
 
+POND_EFECT_HIELO = 1
+POND_EFECT_ROCAS = 1
+
+POND_EFECT_DIFICULTAD = 1
+
+
+
 
 # Power-ups
 
@@ -217,3 +224,6 @@ DMG_CAPARAZON = None
 
 # Relámpago
 SPD_RELAMPAGO = None
+
+
+

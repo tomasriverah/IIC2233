@@ -1,6 +1,7 @@
 import parametros
 import objetos
 import random
+import math
 
 
 def seleccion(lista):
@@ -124,11 +125,12 @@ def cargar_contrincantes(path):
     lista_contrincantes = []
     for linea in archivo:
         contrincante_info = linea.split(",")
-        contrincante = objetos.Contrincante(contrincante_info[0], contrincante_info[1],
-                                            contrincante_info[2], contrincante_info[3],
-                                            contrincante_info[4], contrincante_info[5],
-                                            contrincante_info[6])
-        lista_contrincantes.append(contrincante)
+        if contrincante_info[0] != "Nombre":
+            contrincante = objetos.Contrincante(contrincante_info[0], contrincante_info[1],
+                                                contrincante_info[2], contrincante_info[3],
+                                                contrincante_info[4], contrincante_info[5],
+                                                contrincante_info[6])
+            lista_contrincantes.append(contrincante)
 
     return lista_contrincantes
 
@@ -157,7 +159,6 @@ def carga_piloto(path):
                                         pre_piloto["equilibrio"], pre_piloto["exp"],
                                         pre_piloto["equipo"])
             return new_piloto
-            break
         else:
             print("*** Nombre no encontrado ****")
 
@@ -180,8 +181,85 @@ def cargar_pistas(path):
     lista_pistas = []
     for linea in archivo:
         pre_pista = linea.split(",")
-        pista = objetos.Pista(pre_pista[0], pre_pista[1], pre_pista[2], pre_pista[3], pre_pista[4],
-                              pre_pista[5], pre_pista[6], pre_pista[7])
-        lista_pistas.append(pista)
-    lista_pistas.pop(0)
+        if pre_pista[0] != "Nombre":
+            pista = objetos.Pista(pre_pista[0], pre_pista[1], pre_pista[2], pre_pista[3], pre_pista[4],
+                                  pre_pista[5], pre_pista[6], pre_pista[7])
+            lista_pistas.append(pista)
+
     return lista_pistas
+
+def dano_recibido_x_vuelta(pista, piloto):
+    if pista.tipo in ["pista rocosa", "pista suprema"]:
+        return max(0, pista.rocas - piloto.vehiculo.carroceria)
+    return 0
+
+def tiempo_pits(piloto):
+    tiempo = parametros.TIEMPO_MINIMO_PITS + (piloto.vehiculo_og.chasis - piloto.vehiculo.chasis)\
+             * parametros.VELOCIDAD_PITS
+    return tiempo
+
+def dinero_x_vuelta(pista , n_vuelta):
+    return pista.dificultad*n_vuelta
+
+def dificultad_control(piloto):
+    if piloto.vehiculo.categoria in ["bicicleta", "motocircleta"]:
+        if piloto.personalidad == "precavido":
+            return min(0, piloto.equilibrio * parametros.EQUILIBRIO_PRECAVIDO -
+                    math.floor(parametros.PESO_MEDIO/piloto.vehiculo.peso))
+        if piloto.personalidad == "osado":
+            if piloto.personalidad == "precavido":
+                return min(0, piloto.equilibrio -
+                        math.floor(parametros.PESO_MEDIO / piloto.vehiculo.peso))
+
+
+    return 0
+
+def probabilidad_accidente(vuelta, pista, piloto):
+
+    efecto_chasis = math.floor((piloto.vehiculo_og.chasis - piloto.vehiculo.chasis)/piloto.vehiculo_og.chasis)
+    p_accidente = min(1, max(0, (velocidad_real(vuelta, pista, piloto) -
+                             velocidad_recomendada(piloto.vehiculo, piloto.experiencia, pista))
+                             / velocidad_recomendada(piloto.vehiculo, piloto.experiencia, pista))
+                      + efecto_chasis)
+    return p_accidente
+
+def velocidad_recomendada(vehiculo, exp, pista):
+    if pista.tipo == "pista hielo":
+        v_recomendada = vehiculo.motor + (vehiculo.ruedas - pista.hielo) \
+                        * parametros.POND_EFECT_HIELO + (exp - pista.dificultad)\
+                        * parametros.POND_EFECT_DIFICULTAD
+    elif pista.tipo == "pista hielo":
+        v_recomendada = vehiculo.motor + (vehiculo.carroceria - pista.rocas) \
+                        * parametros.POND_EFECT_ROCAS + (exp - pista.dificultad)\
+                        * parametros.POND_EFECT_DIFICULTAD
+
+    else:
+        v_recomendada = vehiculo.motor + (vehiculo.ruedas - pista.hielo) \
+                        * parametros.POND_EFECT_HIELO + (vehiculo.carroceria - pista.rocas) \
+                        * parametros.POND_EFECT_ROCAS + (exp - pista.dificultad)\
+                        * parametros.POND_EFECT_DIFICULTAD
+    return v_recomendada
+
+def velocidad_intencional(personalidad, v_recomendada):
+    v_intencional = getattr(parametros, "EFECTO_" + str.upper(personalidad)) * v_recomendada
+    return v_intencional
+
+
+def hipotermia(vuelta, pista, piloto):
+    if pista.tipo == "pista hielo" or pista.tipo == "pista suprema":
+        hipo = min(0, vuelta * (piloto.contextura - pista.hielo))
+        return hipo
+    else:
+        return 0
+
+
+def velocidad_real(vuelta, pista, piloto):
+    v_real = max(parametros.VELOCIDAD_MINIMA,
+                 velocidad_intencional(piloto.personalidad,
+                 velocidad_recomendada(piloto.vehiculo, piloto.experiencia,
+                 pista)) +  dificultad_control(piloto) + hipotermia(vuelta, pista, piloto))
+    return v_real
+
+def calcula_tiempo(pista, competidor, vuelta):
+    tiempo = pista.largo / velocidad_real(vuelta, pista, competidor)
+    return tiempo

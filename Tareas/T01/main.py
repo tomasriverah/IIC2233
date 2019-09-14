@@ -32,6 +32,8 @@ def inicio():
             if menu_pre.eleccion == "1":
                 juego.elegir_pista()
                 juego.elegir_vehiculo()
+
+            juego.carrera()
         if menu_principal.eleccion == "3":
             pass
         if menu_principal.eleccion == "0":
