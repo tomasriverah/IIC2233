@@ -4,6 +4,7 @@ import menus
 import copy
 import random
 
+
 class Juego():
     def __init__(self):
         self.partida = None
@@ -68,6 +69,7 @@ class Vehiculo():
         self.dueno = dueno
         self.categoria =categoria
 
+
 class Bicicleta(Vehiculo):
     def __init__(self, nombre, dueno, categoria, chasis, carroceria, ruedas, motor, peso):
         Vehiculo.__init__(self, nombre, dueno, categoria)
@@ -76,6 +78,7 @@ class Bicicleta(Vehiculo):
         self.ruedas = int(ruedas)
         self.motor = int(motor)
         self.peso = int(peso)
+
 
 class Automovil(Vehiculo):
     def __init__(self,nombre, dueno, categoria, chasis, carroceria, ruedas, motor, peso):
@@ -86,6 +89,7 @@ class Automovil(Vehiculo):
         self.motor = int(motor)
         self.peso = int(peso)
 
+
 class Troncomovil(Vehiculo):
     def __init__(self, nombre, dueno, categoria, chasis, carroceria, ruedas, motor, peso):
         Vehiculo.__init__(self, nombre, dueno, categoria)
@@ -95,6 +99,7 @@ class Troncomovil(Vehiculo):
         self.motor = int(motor)
         self.peso = int(peso)
 
+
 class Motocicleta(Vehiculo):
     def __init__(self,nombre, dueno, categoria, chasis, carroceria, ruedas, motor, peso):
         Vehiculo.__init__(self, nombre, dueno, categoria)
@@ -103,6 +108,7 @@ class Motocicleta(Vehiculo):
         self.ruedas = int(ruedas)
         self.motor = int(motor)
         self.peso = int(peso)
+
 
 class Pista():
     def __init__(self, nombre, tipo, hielo, rocas, dificultad, numerov, contrincantes, largo):
@@ -122,6 +128,7 @@ class Pista():
         elif self.tipo == "pista hielo":
             self.rocas = 0
 
+
 class Piloto():
     def __init__(self, nombre, dinero, personalidad, contextura, equilibrio, experiencia, equipo):
         self.nombre = nombre
@@ -134,6 +141,7 @@ class Piloto():
         self.vehiculo = None
         self.vehiculo_og = None
 
+
 class Contrincante():
     def __init__(self, nombre, nivel, personalidad, contextura, equilibrio, experiencia, equipo):
         self.nombre = nombre
@@ -145,7 +153,6 @@ class Contrincante():
         self.equipo = equipo
         self.vehiculo = None
         self.vehiculo_og = None
-
 
 
 class Carrera():
