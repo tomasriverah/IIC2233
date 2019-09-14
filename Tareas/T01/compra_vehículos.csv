@@ -1,9 +1,9 @@
 ﻿Nombre,Costo,Categoría,Chasis,Carrocería,Ruedas,Motor o Zapatillas,Peso
-Auto Regular,100,automóvil,10,10,10,10,10
-Bici Regular,100,bicicleta,10,10,10,10,10
-Tronco Regular,100,troncomóvil,10,10,10,10,10
-Moto Regular,100,motocicleta,10,10,10,10,10
-Super Auto,300,automóvil,20,20,20,20,20
-Super Bici,300,bicicleta,20,20,20,20,20
-Super Tronco,300,troncomóvil,20,20,20,20,20
-Super Moto,300,motocicleta,20,20,20,20,20
+Auto Regular,600,automóvil,10,10,10,10,10
+Bici Regular,600,bicicleta,10,10,10,10,10
+Tronco Regular,600,troncomóvil,10,10,10,10,10
+Moto Regular,600,motocicleta,10,10,10,10,10
+Super Auto,1500,automóvil,200,200,200,200,200
+Super Bici,1500,bicicleta,200,200,200,200,200
+Super Tronco,1500,troncomóvil,200,200,200,200,200
+Super Moto,1500,motocicleta,200,200,200,200,200

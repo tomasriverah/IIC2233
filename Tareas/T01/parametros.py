@@ -3,109 +3,109 @@
 
 AUTOMÓVIL = {
     'CHASIS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 60,
+        'MAX': 80
     },
     'CARROCERIA': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 20,
+        'MAX': 40
     },
     'RUEDAS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 25,
+        'MAX': 50
     },
     'MOTOR': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 70,
+        'MAX': 80
     },
     'ZAPATILLAS': {
         'MIN': 1,
         'MAX': 10
     },
     'PESO': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 90,
+        'MAX': 120
     }
 }
 
 TRONCOMÓVIL = {
     'CHASIS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 20,
+        'MAX': 60
     },
     'CARROCERIA': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 30,
+        'MAX': 45
     },
     'RUEDAS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 40,
+        'MAX': 70
     },
     'MOTOR': {
         'MIN': 1,
         'MAX': 10
     },
     'ZAPATILLAS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 60,
+        'MAX': 90
     },
     'PESO': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 60,
+        'MAX': 70
     }
 }
 
 MOTOCICLETA = {
     'CHASIS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 30,
+        'MAX': 50
     },
     'CARROCERIA': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 40,
+        'MAX': 60
     },
     'RUEDAS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 60,
+        'MAX': 70
     },
     'MOTOR': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 67,
+        'MAX': 125
     },
     'ZAPATILLAS': {
         'MIN': 1,
         'MAX': 10
     },
     'PESO': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 20,
+        'MAX': 30
     }
 }
 
 BICICLETA = {
     'CHASIS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 30,
+        'MAX': 40
     },
     'CARROCERIA': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 30,
+        'MAX': 40
     },
     'RUEDAS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 80,
+        'MAX': 100
     },
     'MOTOR': {
         'MIN': 1,
         'MAX': 10
     },
     'ZAPATILLAS': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 60,
+        'MAX': 70
     },
     'PESO': {
-        'MIN': 1,
-        'MAX': 10
+        'MIN': 5,
+        'MAX': 25
     }
 }
 
@@ -125,14 +125,11 @@ MEJORAS = {
         'COSTO': 10,
         'EFECTO': 5
     },
-    'MOTOR': {
+    'MOTOR/ZAPATILLAS': {
         'COSTO': 10,
         'EFECTO': 5
     },
-    'ZAPATILLAS': {
-        'COSTO': 10,
-        'EFECTO': 5
-    }
+
 }
 
 
@@ -183,8 +180,8 @@ NUMEROEQUIPO = {"1": "TAREOS", "2": "DOCENCIOS","3": "HIBRIDOS",}
 VELOCIDAD_MINIMA = 10
 
 # Velocidad intencional
-EFECTO_OSADO = 10
-EFECTO_PRECAVIDO = 5
+EFECTO_OSADO = 1.3
+EFECTO_PRECAVIDO = 1.1
 
 # Dificultad de control del vehículo
 PESO_MEDIO = 10
@@ -209,10 +206,10 @@ PATHS = {
     'COMPRA' : "compra_vehículos.csv"
 }
 
-POND_EFECT_HIELO = 1
-POND_EFECT_ROCAS = 1
+POND_EFECT_HIELO = 0.02
+POND_EFECT_ROCAS = 0.02
 
-POND_EFECT_DIFICULTAD = 1
+POND_EFECT_DIFICULTAD = 0.02
 
 
 

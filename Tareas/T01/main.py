@@ -1,6 +1,5 @@
 import menus
 import objetos
-import entidades
 import funciones
 
 
@@ -17,6 +16,10 @@ def inicio():
     if menu_sesion.eleccion == "2":
         juego.cargar_partida()
 
+    if menu_sesion.eleccion == "0":
+        print("PEACE OUT!")
+        return
+
 
     menu_principal = menus.MenuPrincipal()
     while True:
@@ -32,12 +35,14 @@ def inicio():
             if menu_pre.eleccion == "1":
                 juego.elegir_pista()
                 juego.elegir_vehiculo()
+                juego.carrera()
 
-            juego.carrera()
         if menu_principal.eleccion == "3":
-            pass
+            funciones.guardar(juego)
+
         if menu_principal.eleccion == "0":
-            pass
+            print("PEACE OUT!")
+            break
 
 
 

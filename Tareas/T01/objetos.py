@@ -18,17 +18,21 @@ class Juego():
     def nueva_partida(self):
         self.piloto = funciones.creacion_piloto([])
         self.piloto.vehiculo = funciones.vehiculo_incial(self.piloto)
-        self.vehiculos.append(self.piloto.vehiculo)
+        self.vehiculos[self.piloto.vehiculo.nombre] = (self.piloto.vehiculo)
 
     def cargar_partida(self):
         self.piloto = funciones.carga_piloto(parametros.PATHS["PILOTOS"])
 
+
     def comprar_vehiculo(self):
-        vehiculo = funciones.comprar_vehiculo(self.piloto)
-        self.vehiculos.append(vehiculo)
+        funciones.comprar_vehiculo(self.piloto, self.vehiculos)
+
 
     def elegir_vehiculo(self):
-        vehiculos_p = [vehiculo for  vehiculo in self.vehiculos if vehiculo.dueno == self.piloto.nombre ]
+        vehiculos_p = []
+        for vehiculo in self.vehiculos.keys():
+            if self.vehiculos[vehiculo].dueno == self.piloto.nombre:
+                vehiculos_p.append(self.vehiculos[vehiculo])
         eleccion = funciones.seleccion([vehiculo.nombre for vehiculo in vehiculos_p])
         for viculo in vehiculos_p:
             if viculo.nombre == eleccion:
@@ -36,11 +40,11 @@ class Juego():
                 self.piloto.vehiculo_og = copy.deepcopy(viculo)
 
     def asignar_vehiculo(self):
-        for viculo in self.vehiculos:
+        for viculo in self.vehiculos.keys():
             for contrincante in self.contrincantes:
-                if viculo.dueno == contrincante.nombre:
-                    contrincante.vehiculo = viculo
-                    contrincante.vehiculo_og = copy.deepcopy(viculo)
+                if self.vehiculos[viculo].dueno == contrincante.nombre:
+                    contrincante.vehiculo = self.vehiculos[viculo]
+                    contrincante.vehiculo_og = copy.deepcopy(contrincante.vehiculo)
 
     def elegir_pista(self):
         nombres_pistas = [pista.nombre for pista in self.pistas]
@@ -54,6 +58,8 @@ class Juego():
         race = Carrera(self.piloto, self.contrincantes, self.pista)
         race.comenzar_carrera()
         race.correr()
+        vehiculo_new = race.retorna_vehiculo()
+        self.vehiculos[vehiculo_new.nombre] = vehiculo_new
 
 
 class Vehiculo():
@@ -108,6 +114,13 @@ class Pista():
         self.numerov = int(numerov)
         self.contrincantes = contrincantes
         self.largo = int(largo)
+        self.cero()
+
+    def cero(self):
+        if self.tipo == "pista rocosa":
+            self.hielo = 0
+        elif self.tipo == "pista hielo":
+            self.rocas = 0
 
 class Piloto():
     def __init__(self, nombre, dinero, personalidad, contextura, equilibrio, experiencia, equipo):
@@ -158,49 +171,67 @@ class Carrera():
          self.vuelta_actual += 1
 
     def correr(self):
-        prep = menus.MenuPits()
+        prep = menus.MenuCarrera()
+
+        leaderboard = []
         while self.vuelta_actual < self.pista.numerov:
+            rompe_loop = 0
             self.nueva_vuelta()
             shadow_realm = []
+            leaderboard = []
             for competidor in self.tiempos.keys():
 
                 time = funciones.calcula_tiempo(self.pista, competidor, self.vuelta_actual)
                 l = self.tiempos[competidor]
-                competidor.vehiculo.chasis += funciones.dano_recibido_x_vuelta(self.pista,
+                competidor.vehiculo.chasis -= funciones.dano_recibido_x_vuelta(self.pista,
                                                                                competidor)
 
                 p_accidente = funciones.probabilidad_accidente(self.vuelta_actual, self.pista,
                                                                competidor)
-                if p_accidente > random.random():
+
+                if p_accidente > random.random() or competidor.vehiculo.chasis <= 0:
                     shadow_realm.append(competidor)
                     print(f"*** {competidor.nombre} ha sido eliminado")
                     if competidor == self.piloto:
                         print("***HAS TENIDO UN ACCIDENTE, CARRERA TERMINADA***")
-                        break
+                        rompe_loop = 1
+
 
                 if competidor == self.piloto and prep.eleccion == "1":
-                    t_pits = funciones.tiempo_pits(competidor)
+                    t_pits = funciones.tiempo_pits(self.piloto)
+                    pits = menus.MenuPits(self.piloto)
+                    pits.mostrar_menu()
+                    pits.recibir_input()
+                    competidor.vehiculo = copy.deepcopy(competidor.vehiculo_og)
+                    if pits.eleccion != "0":
+                        self.piloto.dinero = pits.aplica_mejoras()
+                        competidor.vehiculo_og = copy.deepcopy(competidor.vehiculo)
                     print(f"***Paso por pits demoró {t_pits} segundos***")
                     time += t_pits
                     prep.eleccion = "0"
                 l[0] = time
                 l[1] += time
 
+            if rompe_loop == 1:
+                break
             print(f"Vuelta N° {self.vuelta_actual} de {self.pista.numerov}")
             print("Pos | Nombre         | Vuelta Anterior      | Tiempo   ")
 
             for competidor in shadow_realm:
                 del self.tiempos[competidor]
 
-            leaderboard = []
-            for competidor, tiempo in self.tiempos.items():                         ##### Tiempos y stop funcion
+
+            for competidor, tiempo in self.tiempos.items():
                 leaderboard.append((competidor, tiempo))
 
             leaderboard = sorted(leaderboard, key=lambda x : x[1][1])
             cuenta = 1
             for competidor in leaderboard:
-                print("{}.-  {:<22} {}  {:12}".format(cuenta,competidor[0].nombre, competidor[1][0], competidor[1][1]))
+                print("{}.-  {:<22} {}  {:12}".format(cuenta,competidor[0].nombre,
+                                                      competidor[1][0], competidor[1][1]))
                 cuenta += 1
+
+            self.piloto.dinero += funciones.dinero_x_vuelta(self.pista, self.vuelta_actual)
 
             if self.vuelta_actual == self.pista.numerov:
                 print("***Carrera Finalizada***")
@@ -208,3 +239,20 @@ class Carrera():
             else:
                 prep.mostrar_menu()
                 prep.recibir_input()
+
+        if leaderboard != []:
+            if leaderboard[0][0] == self.piloto:
+                ventaja = funciones.ventaja(leaderboard[0][1][1], leaderboard[len(leaderboard) - 1][1][1])
+                dinero = funciones.dinero_ganador(self.pista)
+                xp = funciones.experiencia_recibida(self.piloto, ventaja, self.pista)
+                print(f"Has ganado ${dinero} y exp {xp}")
+                self.piloto.dinero += dinero
+                self.piloto.experiencia += xp
+
+        for competidor in self.contrincantes:
+            competidor.vehiculo = copy.deepcopy(competidor.vehiculo_og)
+
+        self.piloto.vehiculo = copy.deepcopy(self.piloto.vehiculo_og)
+
+    def retorna_vehiculo(self):
+        return self.piloto.vehiculo

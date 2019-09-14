@@ -5,16 +5,22 @@ import math
 
 
 def seleccion(lista):
-    copia_lista = []
-    for i in lista:
-        copia_lista.append(i)
-    cuenta = 1
-    for item in copia_lista:
-        print(f"[{cuenta}] {item}")
-        cuenta += 1
-    eleccion = input("Introduzca un número:")
-
-    return copia_lista[int(eleccion) - 1]
+    while True:
+        copia_lista = []
+        for i in lista:
+            copia_lista.append(i)
+        cuenta = 1
+        for item in copia_lista:
+            print(f"[{cuenta}] {item}")
+            cuenta += 1
+        eleccion = input("Introduzca un número:")
+        if not str.isdigit(eleccion):
+            print("***ELECCION INVALIDA***")
+        else:
+            if int(eleccion) not in range(0, cuenta ):
+                print("***ELECCION INVALIDA***")
+            else:
+                return copia_lista[int(eleccion) - 1]
 
 def creacion_piloto(vehiculos):
 
@@ -22,8 +28,8 @@ def creacion_piloto(vehiculos):
 
     while True:
         nombre_usuario = input("Ingrese nombre de usuario:")
-        sin_espacio = nombre_usuario.strip(" ")
-        if str.isalnum(sin_espacio) and nombre_usuario not in dicc_pilotos.keys():
+        sin_espacio = nombre_usuario.split(" ")
+        if [str.isalnum(palabra) for palabra in sin_espacio] and nombre_usuario not in dicc_pilotos.keys():
             break
         else:
             print("*****Nombre invalido*****")
@@ -98,27 +104,27 @@ def asignador_stat(vehiculo, stat):
 
 def cargar_vehiculos(path):
     archivo = open(path, "r", encoding="UTF-8" )
-    lista_vehiculos = []
+    dicc_vehiculos = {}
     for vehiculo in archivo:
         viculo = vehiculo.split(",")
         if viculo[2] == "bicicleta":
             auto = objetos.Bicicleta(viculo[0], viculo[1], viculo[2], viculo[3], viculo[4], viculo[5],
                               viculo[6], viculo[7])
-            lista_vehiculos.append(auto)
+            dicc_vehiculos[viculo[0]] = auto
         if viculo[2] == "automóvil":
             auto = objetos.Automovil(viculo[0], viculo[1], viculo[2], viculo[3], viculo[4], viculo[5],
                               viculo[6], viculo[7])
-            lista_vehiculos.append(auto)
+            dicc_vehiculos[viculo[0]] = auto
         if viculo[2] == "troncomóvil":
             auto = objetos.Troncomovil(viculo[0], viculo[1], viculo[2], viculo[3], viculo[4], viculo[5],
                               viculo[6], viculo[7])
-            lista_vehiculos.append(auto)
+            dicc_vehiculos[viculo[0]] = auto
         if viculo[2] == "motocicleta":
             auto = objetos.Motocicleta(viculo[0], viculo[1], viculo[2], viculo[3], viculo[4], viculo[5],
                               viculo[6], viculo[7])
-            lista_vehiculos.append(auto)
+            dicc_vehiculos[viculo[0]] = auto
 
-    return lista_vehiculos
+    return dicc_vehiculos
 
 def cargar_contrincantes(path):
     archivo = open(path, "r", encoding="UTF-8")
@@ -162,7 +168,7 @@ def carga_piloto(path):
         else:
             print("*** Nombre no encontrado ****")
 
-def comprar_vehiculo(piloto):                                                       ##por completar
+def comprar_vehiculo(piloto, vehiculos):
     archivo = open(parametros.PATHS["COMPRA"], "r", encoding="UTF-8-sig")
     dicc = {}
     for linea in archivo:
@@ -171,10 +177,41 @@ def comprar_vehiculo(piloto):                                                   
         dicc[vehiculo[0]] = vehiculo
 
     del dicc["Nombre"]
-    lista = [dicc[llave][0] + " $:" + dicc[llave][1] for llave in dicc.keys()]
+    while True:
+        print(f"Dinero disponible ${piloto.dinero}")
+        lista = [dicc[llave][0] + "; $:" + dicc[llave][1] for llave in dicc.keys()]
+        lista.append("Salir" )
+        eleccion = seleccion(lista)
+        if eleccion == "Salir":
+            return
+        viculo = dicc[eleccion.split(";")[0]]
+        if piloto.dinero < int(dicc[viculo[0]][1]):
+            print("***No tienes dinero suficiente***")
+        else:
+            break
 
+    nombre = input("Introduce el nombre de tu vehículo:")
 
-    eleccion = seleccion(lista)
+    if viculo[2] == "bicicleta":
+        auto = objetos.Bicicleta(nombre, piloto.nombre,
+                                 viculo[2], viculo[3], viculo[4], viculo[5],
+                                 viculo[6], viculo[7])
+    if viculo[2] == "automóvil":
+        auto = objetos.Automovil(nombre, piloto.nombre,
+                                 viculo[2], viculo[3], viculo[4], viculo[5],
+                                 viculo[6], viculo[7])
+    if viculo[2] == "troncomóvil":
+        auto = objetos.Troncomovil(nombre, piloto.nombre,
+                                 viculo[2], viculo[3], viculo[4], viculo[5],
+                                 viculo[6], viculo[7])
+
+    if viculo[2] == "motocicleta":
+        auto = objetos.Motocicleta(nombre, piloto.nombre,
+                                 viculo[2], viculo[3], viculo[4], viculo[5],
+                                 viculo[6], viculo[7])
+
+    vehiculos[auto.nombre] = auto
+    piloto.dinero -= int(dicc[viculo[0]][1])
 
 def cargar_pistas(path):
     archivo = open(path, "r", encoding="UTF-8")
@@ -216,11 +253,13 @@ def dificultad_control(piloto):
 
 def probabilidad_accidente(vuelta, pista, piloto):
 
-    efecto_chasis = math.floor((piloto.vehiculo_og.chasis - piloto.vehiculo.chasis)/piloto.vehiculo_og.chasis)
+    efecto_chasis = math.floor(((piloto.vehiculo_og.chasis -
+                                piloto.vehiculo.chasis))/piloto.vehiculo_og.chasis)
     p_accidente = min(1, max(0, (velocidad_real(vuelta, pista, piloto) -
                              velocidad_recomendada(piloto.vehiculo, piloto.experiencia, pista))
                              / velocidad_recomendada(piloto.vehiculo, piloto.experiencia, pista))
                       + efecto_chasis)
+
     return p_accidente
 
 def velocidad_recomendada(vehiculo, exp, pista):
@@ -263,3 +302,49 @@ def velocidad_real(vuelta, pista, piloto):
 def calcula_tiempo(pista, competidor, vuelta):
     tiempo = pista.largo / velocidad_real(vuelta, pista, competidor)
     return tiempo
+
+def ventaja(tiempo1, tiempon):
+    return tiempon - tiempo1
+
+def experiencia_recibida(piloto, ventaja, pista):
+    if piloto.personalidad == "osado":
+        return round((ventaja + pista.dificultad)* parametros.BONIFICACION_OSADO)
+    else:
+        return round((ventaja + pista.dificultad)* parametros.BONIFICACION_PRECAVIDO)
+
+def dinero_ganador(pista):
+    return pista.numerov * (pista.dificultad + pista.rocas + pista.hielo)
+
+def guardar(partida):
+    print(f"***Guardando partida de {partida.piloto.nombre}***")
+    archivo_pilotos = open(parametros.PATHS["PILOTOS"], "r+", encoding="UTF-8")
+    archivo_vehiculos = open(parametros.PATHS["VEHICULOS"], "r+", encoding="UTF-8")
+    lineas = []
+    lineas_a =[]
+    coma = ","
+    for linea in archivo_pilotos:
+        lineas.append(linea.split(","))
+    for line in lineas:
+
+        if line[0] == partida.piloto.nombre:
+            line = [partida.piloto.nombre, str(partida.piloto.dinero), partida.piloto.personalidad,
+                    str(partida.piloto.contextura), str(partida.piloto.equilibrio),
+                    str(partida.piloto.experiencia), partida.piloto.equipo]
+        lineas_a.append(coma.join(line))
+    archivo_pilotos.close()
+    archivo_pilotos = open(parametros.PATHS["PILOTOS"], "w", encoding="UTF-8")
+
+    for linea in lineas_a:
+        archivo_pilotos.writelines(linea)
+    archivo_pilotos.close()
+
+
+    archivo_vehiculos= open(parametros.PATHS["VEHICULOS"], "w", encoding="UTF-8")
+    archivo_vehiculos.writelines("Nombre,Dueño,Categoría,Chasis,Carrocería,Ruedas,Motor o "
+                                 "Zapatillas,Peso\n")
+    for vehiculo in partida.vehiculos.values():
+        archivo_vehiculos.writelines(vehiculo.nombre + "," + vehiculo.dueno + "," +
+                                     vehiculo.categoria + "," + str(vehiculo.chasis)  + "," +
+                                     str(vehiculo.carroceria) + "," +  str(vehiculo.ruedas)  +
+                                     "," + str(vehiculo.motor)  + "," + str(vehiculo.peso) +"\n" )
+    archivo_pilotos.close()
