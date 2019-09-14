@@ -175,6 +175,7 @@ class Carrera():
 
         leaderboard = []
         while self.vuelta_actual < self.pista.numerov:
+            out = False
             rompe_loop = 0
             self.nueva_vuelta()
             shadow_realm = []
@@ -195,9 +196,10 @@ class Carrera():
                     if competidor == self.piloto:
                         print("***HAS TENIDO UN ACCIDENTE, CARRERA TERMINADA***")
                         rompe_loop = 1
+                        out = True
 
 
-                if competidor == self.piloto and prep.eleccion == "1":
+                if competidor == self.piloto and prep.eleccion == "1" and not out:
                     t_pits = funciones.tiempo_pits(self.piloto)
                     pits = menus.MenuPits(self.piloto)
                     pits.mostrar_menu()
