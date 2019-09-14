@@ -49,7 +49,7 @@ class Juego():
 
     def elegir_pista(self):
         nombres_pistas = [pista.nombre for pista in self.pistas]
-        eleccion = funciones.seleccion(nombre for nombre in nombres_pistas)
+        eleccion = funciones.seleccion(nombres_pistas)
         seleccion_pista = None
         for pista in self.pistas:
             if pista.nombre == eleccion:

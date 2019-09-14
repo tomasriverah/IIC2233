@@ -42,7 +42,8 @@ def creacion_piloto(vehiculos):
         else:
             print("*****Opción Invalida*****")
 
-    nombre_equipo =  parametros.NUMEROEQUIPO[equipo]
+    nombre_equipo1 = parametros.NUMEROEQUIPO[equipo]
+    nombre_equipo =  str.upper(parametros.NUMEROEQUIPO[equipo])
     equilibrio = random.randint(parametros.EQUIPOS[nombre_equipo]["EQUILIBRIO"]["MIN"],
                                 parametros.EQUIPOS[nombre_equipo]["EQUILIBRIO"]["MAX"])
     contextura = random.randint(parametros.EQUIPOS[nombre_equipo]["CONTEXTURA"]["MIN"],
@@ -52,7 +53,8 @@ def creacion_piloto(vehiculos):
         personalidad = random.choice(["OSADO", "PRECAVIDO"])
 
 
-    piloto = objetos.Piloto(nombre_usuario, 0, personalidad, contextura, equilibrio, 0, equipo)
+    piloto = objetos.Piloto(nombre_usuario, 0, personalidad, contextura, equilibrio, 0,
+                            nombre_equipo1)
 
 
     return piloto
@@ -279,6 +281,7 @@ def velocidad_recomendada(vehiculo, exp, pista):
                         * parametros.POND_EFECT_DIFICULTAD
     return v_recomendada
 
+
 def velocidad_intencional(personalidad, v_recomendada):
     v_intencional = getattr(parametros, "EFECTO_" + str.upper(personalidad)) * v_recomendada
     return v_intencional
@@ -321,16 +324,27 @@ def guardar(partida):
     archivo_vehiculos = open(parametros.PATHS["VEHICULOS"], "r+", encoding="UTF-8")
     lineas = []
     lineas_a =[]
+    lista_nombres = []
     coma = ","
     for linea in archivo_pilotos:
         lineas.append(linea.split(","))
     for line in lineas:
+        lista_nombres.append(line[0])
 
         if line[0] == partida.piloto.nombre:
             line = [partida.piloto.nombre, str(partida.piloto.dinero), partida.piloto.personalidad,
                     str(partida.piloto.contextura), str(partida.piloto.equilibrio),
-                    str(partida.piloto.experiencia), partida.piloto.equipo]
+                    str(partida.piloto.experiencia), partida.piloto.equipo + "\n"]
         lineas_a.append(coma.join(line))
+
+
+    if partida.piloto.nombre not in lista_nombres:
+        pilot = [partida.piloto.nombre, str(partida.piloto.dinero),
+                 str.lower(partida.piloto.personalidad),
+                 str(partida.piloto.contextura), str(partida.piloto.equilibrio),
+                 str(partida.piloto.experiencia), partida.piloto.equipo]
+        lineas_a.append(coma.join(pilot))
+
     archivo_pilotos.close()
     archivo_pilotos = open(parametros.PATHS["PILOTOS"], "w", encoding="UTF-8")
 

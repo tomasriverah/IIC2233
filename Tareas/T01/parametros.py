@@ -172,7 +172,7 @@ EQUIPOS = {
 }
 
 
-NUMEROEQUIPO = {"1": "TAREOS", "2": "DOCENCIOS","3": "HIBRIDOS",}
+NUMEROEQUIPO = {"1": "Tareos", "2": "Docencios","3": "Hibridos",}
 
 # Las constantes de las formulas
 
