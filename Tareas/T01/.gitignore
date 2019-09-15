@@ -1,6 +1,8 @@
-.idea
+﻿.idea
 contrincantes.csv
 Enunciado.pdf
 pilotos.csv
 pistas.csv
 vehículos.csv
+entidades.py
+__pycache__
