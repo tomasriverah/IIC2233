@@ -21,6 +21,11 @@
 El módulo principal de la tarea a ejecutar es  ```main.py```.
 El archivo compra_vehículos.csv se puede modificar manualmente y el juego funciona siempre y cuanto se respete el formato original.
 
+## Implementación
+
+* Todo lo pedido en el enunciado está implementado a excepción de los bonus.
+* En mi testeo (no tan extensivo) los menus eran aprueba de errores al igual que los input y el prorgrama no sea caía.
+* Se pueden crear al igual que cargar partidas, luego guardarlas y despues volver a continuar en estas y se guarda la exp, el dinero y las mejoras de los autos tal como era pedido en el enunciado.
 
 ## Librerías
 ### Librerías externas utilizadas
