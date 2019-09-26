@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QWidget, QLabel, QLineEdit, QPushButton,
                              QApplication, QHBoxLayout, QVBoxLayout)
 from PyQt5.QtCore import (pyqtSignal, Qt, QRect)
 from PyQt5.QtGui import (QPixmap, QFont, QMovie)
-import DCColgado
+
 
 
 """
@@ -33,16 +33,17 @@ class VentanaJuego(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.diccionario = dict
         self.init_gui()
-
-
-
+        self.datos = {}
 
     def recieve(self, diccionario):
-        self.diccionario = diccionario
-        print(self.diccionario.keys())
+
+        self.usadas.setText(f"Disponibles: {diccionario['usadas']}")
+        self.disponibles.setText(f"Disponibles: {diccionario['disponibles']}")
+
     def init_gui(self):
+
+
 
         self.setGeometry(200, 100, 400, 600)
         self.setWindowTitle('DCCRaid51')
@@ -83,6 +84,10 @@ class VentanaJuego(QWidget):
         self.setLayout(layout_arriba)
 
         self.seleccion.clicked.connect(self.confirma)
+
+        def actualiza(dicc):
+            self.usadas.setText(f"Usadas: {dicc['usadas']}")
+            self.disponibles.setText(f"Disponibles : {dicc['disponibles']}")
 
     def confirma(self):
         letra = self.letra_actual.text()
