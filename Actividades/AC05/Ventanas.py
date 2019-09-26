@@ -40,6 +40,9 @@ class VentanaJuego(QWidget):
 
         self.usadas.setText(f"Disponibles: {diccionario['usadas']}")
         self.disponibles.setText(f"Disponibles: {diccionario['disponibles']}")
+        pixeles = QPixmap(diccionario["imagen"])
+        self.imagen.setPixmap(pixeles)
+
 
     def init_gui(self):
 
@@ -85,12 +88,10 @@ class VentanaJuego(QWidget):
 
         self.seleccion.clicked.connect(self.confirma)
 
-        def actualiza(dicc):
-            self.usadas.setText(f"Usadas: {dicc['usadas']}")
-            self.disponibles.setText(f"Disponibles : {dicc['disponibles']}")
 
     def confirma(self):
+
         letra = self.letra_actual.text()
-        self.enviar_letra_signal({'letra': letra})
+        self.enviar_letra_signal.emit({'letra' : letra})
 
 
