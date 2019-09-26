@@ -87,11 +87,14 @@ class VentanaJuego(QWidget):
         self.setLayout(layout_arriba)
 
         self.seleccion.clicked.connect(self.confirma)
+        
 
 
     def confirma(self):
 
         letra = self.letra_actual.text()
         self.enviar_letra_signal.emit({'letra' : letra})
+
+
 
 
