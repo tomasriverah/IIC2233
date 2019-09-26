@@ -42,7 +42,7 @@ class VentanaJuego(QWidget):
         self.disponibles.setText(f"Disponibles: {diccionario['disponibles']}")
         pixeles = QPixmap(diccionario["imagen"])
         self.imagen.setPixmap(pixeles)
-
+        self.adivina.setText(diccionario['palabra'])
 
     def init_gui(self):
 
