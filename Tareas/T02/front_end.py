@@ -109,13 +109,6 @@ class VentanaPrincipal(QWidget):
 
         self.show()
 
-    def recibir_signal_interna(self, data):
-        self.datos[mapa] = data
-
-
-    def enviar_signal_v_principal(self):
-        self.signal_v_principal.emit(self.datos)
-
 
 class VentanaJuego(QWidget):
     def __init__(self, *args, **kwargs):
@@ -169,6 +162,7 @@ class VentanaJuego(QWidget):
             self.cell.setFixedSize(30, 30)
             if celda.tipo == 'C':
                 self.cell = DropLabel(self)
+                self.cell.send_crops.connect(self.planta_cultivo)
                 self.cell.coordenadas = (x, y)
                 self.cell.setFixedSize(30, 30)
             if celda.tipo == 'R':
@@ -214,8 +208,22 @@ class VentanaJuego(QWidget):
         grid.addLayout(store,y_tienda, x_tienda, 0, 0)
         grid.addLayout(house, y_casa, x_casa, 0, 0)
 
-
+        self.grid = grid
         self.setLayout(grid)
+
+
+    def planta_cultivo(self, data):
+        coordenadas = data[0]
+
+        x = coordenadas[0]
+        y = coordenadas[1]
+
+        self.cell = QLabel(self)
+        self.cell.setFixedSize(30, 30)
+        pixeles = QPixmap(parametros_generales.DICCIONARIO_SEMILLAS[data[1]])
+        self.cell.setPixmap(pixeles)
+        self.cell.setScaledContents(True)
+        self.grid.addWidget(self.cell, y, x, 0, 0)
 
 
 
@@ -282,7 +290,7 @@ class DraggableLabel(QLabel):
 
 class DropLabel(QLabel):
 
-    send_crops = pyqtSignal(dict)
+    send_crops = pyqtSignal(list)
 
     def __init__(self, *args, **kwargs):
         QLabel.__init__(self, *args, **kwargs)
@@ -299,8 +307,8 @@ class DropLabel(QLabel):
         text = event.mimeData().text()
         self.setText(text)
         event.acceptProposedAction()
-        self.send_crops.emit({self.coordenadas : semilla})
 
+        self.send_crops.emit([self.coordenadas, semilla])
 
 
 

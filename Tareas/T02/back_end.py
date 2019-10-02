@@ -49,6 +49,8 @@ class Juego(QObject):
         self.mapa[coordenadas].tipo = 'cultivo'
         self.img = parametros_generales.DICCIONARIO_CULTIVOS['semilla_' + data[coordenadas]]
 
+
+
 class Celda(QObject):
     def __init__(self, tipo, coordenadas,*args, **kwargs):
         super().__init__()

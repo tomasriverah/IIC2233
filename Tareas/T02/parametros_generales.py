@@ -17,3 +17,5 @@ DICCIONARIO_IMAGENES = {'O' : os.path.join(PATH_IMG_MAPA, 'tile006.png'),
 
 DICCIONARIO_CULTIVOS = {'semilla_choclo' : os.path.join(PATH_IMG_CULTIVOS, 'choclo', 'seeds.png'),
                         }
+
+DICCIONARIO_SEMILLAS = {'choclo': os.path.join(PATH_IMG_CULTIVOS, 'choclo', 'stage_1.png') }

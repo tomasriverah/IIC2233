@@ -18,6 +18,6 @@ ventana.partida_signal.connect(game.recibir_mapa)
 ventana.partida_signal.connect(ventana_principal.cargar)
 game.enviar_signal.connect(ventana_principal.mapa.recibir)
 
-ventana_principal.signal_v_principal.connect(game.recibir_update)
+
 
 sys.exit(app.exec())
