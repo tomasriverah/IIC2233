@@ -1,6 +1,7 @@
 import sys
 import os
 import parametros_generales
+from back_end import Personaje
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel,
                              QLineEdit, QHBoxLayout, QVBoxLayout, QSpinBox, QFrame, QMainWindow,
                              QGridLayout, QDockWidget)
@@ -84,13 +85,21 @@ class VentanaPrincipal(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.init_gui()
+        self.personaje_back = self.mapa.personaje_back
+        self.init_signals()
         self.datos = {'mapa' : None}
+
     def init_gui(self):
         self.setWindowTitle('DCCAMPO')
 
         self.mapa = VentanaJuego()
         self.inventario = VentanaInventario()
+
+
+
+
         vbox = QVBoxLayout()
         vbox.addWidget(self.inventario)
         vbox.addWidget(self.mapa)
@@ -98,26 +107,64 @@ class VentanaPrincipal(QWidget):
 
         self.setLayout(vbox)
 
-
-
-
-
-
-
+    def init_signals(self):
+        self.update_character_signal = self.personaje_back.actualiza_personaje_signal
 
     def cargar(self, data):
-
         self.show()
+
+    key_event_dict = {
+        Qt.Key_D: 'R',
+        Qt.Key_A: 'L',
+        Qt.Key_W: 'U',
+        Qt.Key_S: 'D'
+    }
+
+    def keyPressEvent(self, event):
+
+        if event.key() in self.key_event_dict:
+            action = self.key_event_dict[event.key()]
+            self.update_character_signal.emit(action)
+
 
 
 class VentanaJuego(QWidget):
+
+    sprites_paths = {
+        ('stand', 'D'): os.path.join('sprites', 'personaje', 'down_1.png'),
+        ('walk', 'D', 1): os.path.join('sprites', 'personaje', 'down_2.png'),
+        ('walk', 'D', 2): os.path.join('sprites', 'personaje', 'down_3.png'),
+        ('walk', 'D', 3): os.path.join('sprites', 'personaje', 'down_4.png'),
+        ('stand', 'L'): os.path.join('sprites', 'personaje', 'left_1.png'),
+        ('walk', 'L', 1): os.path.join('sprites', 'personaje', 'left_2.png'),
+        ('walk', 'L', 2): os.path.join('sprites', 'personaje', 'left_3.png'),
+        ('walk', 'L', 3): os.path.join('sprites', 'personaje', 'left_4.png'),
+        ('stand', 'R'): os.path.join('sprites', 'personaje', 'right_1.png'),
+        ('walk', 'R', 1): os.path.join('sprites', 'personaje', 'right_2.png'),
+        ('walk', 'R', 2): os.path.join('sprites', 'personaje', 'right_3.png'),
+        ('walk', 'R', 3): os.path.join('sprites', 'personaje', 'right_4.png'),
+        ('stand', 'U'): os.path.join('sprites', 'personaje', 'up_1.png'),
+        ('walk', 'U', 1): os.path.join('sprites', 'personaje', 'up_2.png'),
+        ('walk', 'U', 2): os.path.join('sprites', 'personaje', 'up_3.png'),
+        ('walk', 'U', 3): os.path.join('sprites', 'personaje', 'up_4.png')
+    }
+
+
+
+
+    signal_v_juego = pyqtSignal(list)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.frame = 1
+        self.personaje_back = Personaje(10, 10)
 
     def init_gui(self):
 
         is_casa = False
         is_tienda = False
+
+
 
         grid = QGridLayout(self)
         grid.setSpacing(0)
@@ -129,6 +176,8 @@ class VentanaJuego(QWidget):
         house = QVBoxLayout(self)
 
         store = QVBoxLayout(self)
+
+
 
 
         for coordenadas in self.mapa.keys():
@@ -178,8 +227,6 @@ class VentanaJuego(QWidget):
             celda = self.mapa[coordenadas]
 
 
-
-
             if celda.tipo == 'H' and not is_casa :
                 self.cell = QLabel(self)
                 self.cell.setFixedSize(60,60)
@@ -203,13 +250,20 @@ class VentanaJuego(QWidget):
                 store.addWidget(self.cell)
 
 
-
         grid.addLayout(grid1,0 ,0 ,0 ,0)
         grid.addLayout(store,y_tienda, x_tienda, 0, 0)
         grid.addLayout(house, y_casa, x_casa, 0, 0)
 
+
         self.grid = grid
         self.setLayout(grid)
+
+        self.front_character = QLabel(self)
+        self.front_character.setFixedSize(20, 30)
+        current_sprite = QPixmap(self.sprites_paths[('walk', 'D', 1)])
+        self.front_character.setPixmap(current_sprite)
+        self.front_character.setScaledContents(True)
+        self.grid.addWidget(self.front_character, 5, 5, 0, 0)
 
 
     def planta_cultivo(self, data):
@@ -224,6 +278,21 @@ class VentanaJuego(QWidget):
         self.cell.setPixmap(pixeles)
         self.cell.setScaledContents(True)
         self.grid.addWidget(self.cell, y, x, 0, 0)
+        self.signal_v_juego.emit(data)
+
+    @property
+    def frame(self):
+        return self._frame
+
+    @frame.setter
+    def frame(self, value):
+        """
+        Actualiza el estado de animación de la imagen del personaje.
+        Solo tiene 3 estados.
+        :param value: int
+        :return: None
+        """
+        self._frame = value if value < 3 else 1
 
 
 
@@ -232,6 +301,23 @@ class VentanaJuego(QWidget):
 
         self.mapa = data['mapa']
         self.init_gui()
+
+    def update_window(self, event):
+        """
+        Función que recibe un diccionario con la información del
+        personaje y las actualiza en el front-end.
+        :param event: dict
+        :return: None
+        """
+        direction = event['direction']
+        position = event['position']
+        if position == 'walk':
+            self.frame += 1
+            self.current_sprite = QPixmap(self.sprites_paths[(position, direction, self.frame)])
+        else:
+            self.current_sprite = QPixmap(self.sprites_paths[(position, direction)])
+        self.front_character.setPixmap(self.current_sprite)
+        self.front_character.move(event['x'], event['y'])
 
 
 class VentanaInventario(QWidget):
@@ -259,8 +345,9 @@ class VentanaInventario(QWidget):
         self.inventario = data
 
 
+
 '''
-class DraggableLabel sacada de internet, link:
+class DraggableLabel y Drop Label  sacada de internet, link:
 https://stackoverflow.com/questions/50232639/drag-and-drop-qlabels-with-pyqt5
 
 '''

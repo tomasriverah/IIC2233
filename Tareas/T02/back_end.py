@@ -44,10 +44,9 @@ class Juego(QObject):
         self.enviar_signal.emit(data)
 
     def recibir_update(self, data):
-        coordenadas = data.keys()[0]
-        self.mapa[coordenadas] = Crop()
-        self.mapa[coordenadas].tipo = 'cultivo'
-        self.img = parametros_generales.DICCIONARIO_CULTIVOS['semilla_' + data[coordenadas]]
+        coordenadas = data[0]
+        self.mapa[coordenadas] = Crop('cultivo', coordenadas)
+
 
 
 
@@ -56,12 +55,12 @@ class Celda(QObject):
         super().__init__()
         self.tipo = tipo
         self.coordenadas = coordenadas
-        self.img = None
+
 
 
 class Crop(Celda):
-    def __init__(self, *args, **kwargs):
-        super().__init__()
+    def __init__(self, tipo, coordenadas,*args, **kwargs):
+        super().__init__(tipo, coordenadas)
         self.etapa = 0
 
 
@@ -84,6 +83,34 @@ class Item():
         self.nombre = nombre
 
 
+class Personaje(QObject):
+
+    actualiza_personaje_signal = pyqtSignal(str)
+    actualiza_window = pyqtSignal(dict)
+
+    def __init__(self, x, y):
+        super().__init__()
+        self.direction = 'R'
+        self.x = 100
+        self.y = 100
+        self.actualiza_personaje_signal.connect(self.move)
 
 
+
+    def move(self, event):
+
+        print(event)
+        print('i move')
+        if event == 'R':
+            self.direction = 'R'
+            self.x += 10
+        elif event == 'L':
+            self.direction = 'L'
+            self.x -= 10
+        elif event == 'U':
+            self.direction = 'U'
+            self.y += 10
+        elif event == 'D':
+            self.direction = 'D'
+            self.y -= 10
 

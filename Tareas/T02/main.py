@@ -16,7 +16,12 @@ game = Juego()
 
 ventana.partida_signal.connect(game.recibir_mapa)
 ventana.partida_signal.connect(ventana_principal.cargar)
+
+ventana_principal.mapa.signal_v_juego.connect(game.recibir_update)
+
+
 game.enviar_signal.connect(ventana_principal.mapa.recibir)
+
 
 
 
