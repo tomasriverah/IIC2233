@@ -1,4 +1,3 @@
-
 import os
 import parametros_generales
 from extras import DropLabelBacan, DraggableLabel, DropLabel, QLabelBacan, genera_cultivo_widget
@@ -141,7 +140,7 @@ class VentanaPrincipal(QWidget):
 
         self.tienda_back.actualizar_inventario.connect(self.inventario.inventario.enviar_inventario)
 
-
+        self.status_bar.salir.clicked.connect(self.hide)
 
     def cargar(self, data):
         self.show()
@@ -206,10 +205,25 @@ class StatusBar(QWidget):
         self.progress.setFixedSize(200, 30)
         self.progress.setMaximum(parametros_generales.ENERGIA_JUGADOR)
         self.progress.setValue(parametros_generales.ENERGIA_JUGADOR)
+
+        self.pausa = QPushButton('Pausa')
+        self.pausa.setFixedSize(60,30)
+        self.salir = QPushButton('Salir')
+        self.salir.setFixedSize(60, 30)
+
+        vbox2 = QVBoxLayout()
+        vbox2.addWidget(self.pausa)
+        vbox2.addWidget(self.salir)
+
+
         vbox.addWidget(self.progress)
         hbox.addLayout(vbox)
         hbox.addLayout(hbox1)
+        hbox.addLayout(vbox2)
+
         self.setLayout(hbox)
+
+
 
         self.reloj.update_clock.connect(self.update_watch)
 
@@ -312,6 +326,7 @@ class VentanaJuego(QWidget):
             if celda.tipo == 'C':
                 self.cell = DropLabel(self)
                 self.cell.send_crops.connect(self.planta_cultivo)
+                self.cell.send_crops.connect(self.inventario.plantacion)
                 self.cell.coordenadas = (x, y)
                 self.cell.setFixedSize(30, 30)
             if celda.tipo == 'R':
@@ -545,8 +560,6 @@ class VentanaTienda(QWidget):
             layout_botones.addWidget(boton_c)
             layout_botones.addWidget(boton_v)
 
-
-
             boton_v.clicked.connect(self.venta)
             boton_c.clicked.connect(self.compra)
 
@@ -564,8 +577,6 @@ class VentanaTienda(QWidget):
 
             vbox.addLayout(layout_h)
         self.setLayout(vbox)
-
-
 
 
     def venta(self):

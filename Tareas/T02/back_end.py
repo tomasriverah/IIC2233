@@ -185,10 +185,6 @@ class Crop(Celda):
 
 
 
-
-
-
-
 class Inventario(QObject):
 
     inventario_signal = pyqtSignal(dict)
@@ -216,6 +212,13 @@ class Inventario(QObject):
 
     def recibir(self, data):
         self.inventario[data][1] += 1
+        self.enviar_inventario()
+
+    def plantacion(self, data):
+        if data[1] == 'alcachofa':
+            self.dicc_inventario[1][1] -= 1
+        elif data[1] == 'choclo':
+            self.dicc_inventario[0][1] -= 1
         self.enviar_inventario()
 
 
