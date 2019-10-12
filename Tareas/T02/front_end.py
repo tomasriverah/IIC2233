@@ -1,7 +1,7 @@
 import sys
 import os
 import parametros_generales
-import extras
+from extras import DropLabelBacan, DraggableLabel, DropLabel, QLabelBacan, genera_cultivo_widget
 import time
 from threading import Thread
 from back_end import Personaje, Inventario, Tienda
@@ -53,6 +53,7 @@ class VentanaInicial(QWidget):
         path_mapa = os.path.join(parametros_generales.PATH_MAPAS, self.mapa.text())
         if os.path.exists(path_mapa):
             self.partida_signal.emit(path_mapa)
+            self.hide()
         else:
 
             self.error = VentanaError()
@@ -104,6 +105,8 @@ class VentanaPrincipal(QWidget):
         self.tienda_back = Tienda()
         self.tienda_back.personaje = self.personaje_back
         self.tienda_back.inventario = self.inventario.inventario.inventario
+        self.v_juego.inventario = self.inventario.inventario
+        self.juego.inventario = self.inventario.inventario
         self.status_bar = StatusBar(self.reloj, self.personaje_back)
         self.tienda = VentanaTienda()
         self.tienda.tienda_back = self.tienda_back
@@ -131,8 +134,9 @@ class VentanaPrincipal(QWidget):
 
         self.tienda.signal_venta.connect(self.tienda_back.venta)
 
-
         self.tienda_back.actualizar_inventario.connect(self.inventario.inventario.enviar_inventario)
+
+
 
     def cargar(self, data):
         self.show()
@@ -242,7 +246,7 @@ class VentanaJuego(QWidget):
         self.frame = 1
         self.personaje_back = Personaje(10, 10)
         self.n_walk_coord = []
-
+        self.inventario = None
 
     def init_gui(self):
 
@@ -251,6 +255,7 @@ class VentanaJuego(QWidget):
 
         self.personaje_back.mapa = self.mapa
         self.personaje_back.init_celdas()
+
 
         grid = QGridLayout(self)
         grid.setSpacing(0)
@@ -277,8 +282,12 @@ class VentanaJuego(QWidget):
 
                 pixeles = QPixmap(parametros_generales.DICCIONARIO_IMAGENES['C'])
 
+
             else:
-                self.cell = QLabel(self)
+                self.cell = DropLabelBacan(self)
+                self.cell.send_crops.connect(self.planta_cultivo)
+                self.cell.coordenadas = (x, y)
+                self.cell.mousePressEvent = self.cell.areate
                 self.cell.setFixedSize(30, 30)
                 pixeles = QPixmap(parametros_generales.DICCIONARIO_IMAGENES['O'])
 
@@ -293,14 +302,15 @@ class VentanaJuego(QWidget):
             x = coordenadas[0]
             y = coordenadas[1]
             celda = self.mapa[coordenadas]
-            self.cell = QLabel(self)
-            self.cell.setFixedSize(30, 30)
+
             if celda.tipo == 'C':
                 self.cell = DropLabel(self)
                 self.cell.send_crops.connect(self.planta_cultivo)
                 self.cell.coordenadas = (x, y)
                 self.cell.setFixedSize(30, 30)
             if celda.tipo == 'R':
+                self.cell = QLabel(self)
+                self.cell.setFixedSize(30, 30)
                 self.n_walk_coord.append((x, y))
                 pixeles = QPixmap(parametros_generales.DICCIONARIO_IMAGENES['R'])
                 self.cell.setPixmap(pixeles)
@@ -360,46 +370,46 @@ class VentanaJuego(QWidget):
         x = coordenadas[0]
         y = coordenadas[1]
 
-        cell = extras.genera_cultivo_widget(data[1])
+        cell = genera_cultivo_widget(data[1])
         hbox = QHBoxLayout()
         hbox.addWidget(cell)
         self.grid.addLayout(hbox, y, x, 0, 0)
+        data.append(cell)
         self.signal_v_juego.emit(data)
 
-    def crece_cultivo(self, cultivo):
-        x,y = cultivo.coordenadas
-        self.cell = QStackedWidget(self)
-        cultivo.signal_celda.connect(self.cell.setCurrentWidget())
-        self.cell.setFixedSize(30, 30)
-        for i in range(0, 7):
-            label = QLabel()
-            pixeles = QPixmap(parametros_generales.DICCIONARIO_SEMILLAS[cultivo.tipo, cultivo.etapa])
-            label.setPixmap(pixeles)
-            label.setScaledContents(True)
-            self.cell.addWidget(label)
-
-        self.grid.addWidget(self.cell, y, x, 0, 0)
 
     def spawn(self, dicc):
         if dicc['oro']:
             x,y = dicc['oro'].coordenadas
-            self.celda = QLabel(self)
+            self.celda = QLabelBacan(self)
+            self.celda.tipo = 7
+            self.celda.x = x
+            self.celda.y = y
+            self.personaje_back.signal_movimiento.connect(self.celda.recoleccion)
             self.celda.setFixedSize(30, 30)
             sprite = QPixmap(parametros_generales.PATH_IMG_ORO)
             self.celda.setPixmap(sprite)
             self.celda.setScaledContents(True)
             self.grid.addWidget(self.celda, y, x, 0, 0)
-
+            self.celda.add_inventario_signal.connect(self.inventario.recibir)
         if dicc['arbol']:
             x, y = dicc['arbol'].coordenadas
-            self.celda = extras.QLabelBacan(self)
+            self.celda = QLabelBacan(self)
             self.celda.axe = self.personaje_back.axe
+            self.celda.tipo = 6
             self.celda.setFixedSize(30, 30)
+            self.personaje_back.signal_movimiento.connect(self.celda.recoleccion)
+            self.celda.x = x
+            self.celda.y = y
+            self.celda.recolectable = False
             sprite = QPixmap(parametros_generales.PATH_IMG_ARBOL)
             self.celda.setPixmap(sprite)
             self.celda.setScaledContents(True)
             self.celda.mouseDoubleClickEvent = self.celda.escondete
             self.grid.addWidget(self.celda, y, x, 0, 0)
+            self.celda.add_inventario_signal.connect(self.inventario.recibir)
+
+
 
 
 
@@ -555,56 +565,6 @@ class VentanaTienda(QWidget):
         sender = self.sender()
         self.signal_compra.emit(sender.objectName())
 
-'''
-class DraggableLabel y Drop Label  sacada de internet, link:
-https://stackoverflow.com/questions/50232639/drag-and-drop-qlabels-with-pyqt5
-
-'''
-
-class DraggableLabel(QLabel):
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.drag_start_position = event.pos()
-
-    def mouseMoveEvent(self, event):
-        if not (event.buttons() & Qt.LeftButton):
-            return
-        if (event.pos() - self.drag_start_position).manhattanLength() < \
-                QApplication.startDragDistance():
-            return
-        drag = QDrag(self)
-        mimedata = QMimeData()
-        mimedata.setText(self.text())
-        drag.setMimeData(mimedata)
-        pixmap = QPixmap(self.size())
-        painter = QPainter(pixmap)
-        painter.drawPixmap(self.rect(), self.grab())
-        painter.end()
-        drag.setPixmap(pixmap)
-        drag.setHotSpot(event.pos())
-        drag.exec_(Qt.CopyAction | Qt.MoveAction)
-
-class DropLabel(QLabel):
-
-    send_crops = pyqtSignal(list)
-
-    def __init__(self, *args, **kwargs):
-        QLabel.__init__(self, *args, **kwargs)
-        self.setAcceptDrops(True)
-        self.coordenadas = None
-
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasText():
-            event.acceptProposedAction()
-
-    def dropEvent(self, event):
-        pos = event.pos()
-        semilla = event.source().tipo
-        text = event.mimeData().text()
-        self.setText(text)
-        event.acceptProposedAction()
-
-        self.send_crops.emit([self.coordenadas, semilla])
 
 
 

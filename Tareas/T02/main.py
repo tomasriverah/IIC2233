@@ -22,7 +22,7 @@ ventana_principal.v_juego.signal_v_juego.connect(game.recibir_update)
 
 
 game.enviar_signal.connect(ventana_principal.v_juego.recibir)
-game.enviar_signal_crop.connect(ventana_principal.v_juego.crece_cultivo)
+
 
 
 

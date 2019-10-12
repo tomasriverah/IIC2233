@@ -36,7 +36,7 @@ DICCIONARIO_SEMILLAS = {('choclo', 0): os.path.join(PATH_IMG_CULTIVOS, 'choclo',
                         ('alcachofa', 3): os.path.join(PATH_IMG_CULTIVOS, 'alcachofa', 'stage_4.png'),
                         ('alcachofa', 4): os.path.join(PATH_IMG_CULTIVOS, 'alcachofa', 'stage_5.png'),
                         ('alcachofa', 5): os.path.join(PATH_IMG_CULTIVOS, 'alcachofa', 'stage_6.png'),
-                        ('alcachofa', 6): os.path.join(PATH_IMG_CULTIVOS, 'alcachofa', 'icon.png')
+
 }
 
 

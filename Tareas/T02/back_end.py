@@ -1,6 +1,6 @@
 import os
 from random import random, choice
-from extras import Reloj
+from extras import Reloj, QLabelBacan
 from PyQt5.QtCore import QObject, pyqtSignal, QTimer
 from parametros_generales import (VEL_MOVIMIENTO, ENERGIA_JUGADOR, MONEDAS_INICIALES, PROB_ARBOL,
                                   PROB_ORO, DICCIONARIO_TIENDA)
@@ -12,6 +12,7 @@ class Juego(QObject):
     enviar_signal = pyqtSignal(dict)
     enviar_signal_crop = pyqtSignal(object)
     signal_personaje = pyqtSignal(list)
+    signal_fruto = pyqtSignal(object)
     signal_reloj = pyqtSignal(object)
     signal_spawn = pyqtSignal(dict)
 
@@ -26,6 +27,9 @@ class Juego(QObject):
         self.time.its_a_new_day.connect(self.new_day)
         self.tamano_x = 0
         self.tamano_y = 0
+        self.inventario = None
+
+
     def recibir_mapa(self, path):
 
         self.cargar_mapa(path)
@@ -50,11 +54,13 @@ class Juego(QObject):
                 cell = Celda(celda,(x,y))
                 x += 1
                 self.mapa[cell.coordenadas] = cell
-                if cell.tipo in ['R', 'T', 'S']:
+                if cell.tipo in ['R']:
                     self.lista_no_caminable.append(cell.coordenadas)
             y += 1
         self.personaje.max_y = 29 * self.tamano_y
         self.personaje.max_x = 29 * self.tamano_x
+        self.personaje.lista_no_caminable = self.lista_no_caminable
+        self.personaje.load_lista_no_caminable()
         self.actualizar_data()
 
     def actualizar_data(self):
@@ -70,8 +76,10 @@ class Juego(QObject):
         coordenadas = data[0]
 
         self.mapa[coordenadas] = Crop(data[1], coordenadas)
+        self.mapa[coordenadas].widget = data[2]
         self.mapa[coordenadas].signal_celda.connect(self.mandar_crop_update)
-
+        self.mapa[coordenadas].personaje = self.personaje
+        self.mapa[coordenadas].inventario = self.inventario
 
     def new_day(self):
         celdas_disponibles = []
@@ -81,16 +89,21 @@ class Juego(QObject):
 
         if random() < PROB_ORO:
             cell_oro = choice(celdas_disponibles)
+
         else:
             cell_oro = False
         if random() < PROB_ARBOL:
             cell_arbol = choice(celdas_disponibles)
+
         else:
             cell_arbol = False
 
         self.signal_spawn.emit({'oro' : cell_oro,
                                 'arbol' : cell_arbol,
         })
+
+
+
 
 
     def mandar_crop_update(self, crop):
@@ -114,6 +127,9 @@ class Celda(QObject):
 
 
 class Crop(Celda):
+
+    signal_fruto = pyqtSignal(object)
+
     def __init__(self, tipo, coordenadas,*args, **kwargs):
         self.widget = None
         super().__init__(tipo, coordenadas)
@@ -121,6 +137,8 @@ class Crop(Celda):
         self.tiempo_e_actual = 0
         self.set_timer()
         self.available = False
+        self.personaje = None
+        self.inventario = None
 
 
     def set_timer(self):
@@ -133,15 +151,40 @@ class Crop(Celda):
 
 
     def update_crop(self):
+        self.check_cosecha()
+        if self.tipo == 'choclo' and self.etapa == 6:
+            self.etapa = 4
 
         if self.tipo == 'choclo' and self.etapa < 6:
             self.etapa += 1
+            self.widget.setCurrentIndex(self.etapa)
 
-        elif self.tipo == 'alcachofa' and self.etapa < 6:
+
+        elif self.tipo == 'alcachofa' and self.etapa < 5:
             self.etapa += 1
+            self.widget.setCurrentIndex(self.etapa)
 
-        self.widget.setWidget(self.etapa)
+
+
         self.signal_celda.emit(self)
+
+    def check_cosecha(self):
+
+        x,y = self.coordenadas
+        if self.tipo == 'alcachofa' and self.etapa == 5:
+
+            widget = QLabelBacan()
+            widget.tipo = 5
+            self.personaje.signal_movimiento.connect(widget.recoleccion)
+            widget.add_inventario_signal.connect(self.inventario.recibir)
+            widget.artichoke()
+            widget.x = x
+            widget.y = y
+            self.widget.addWidget(widget)
+            self.widget.setCurrentIndex(6)
+
+
+
 
 class Inventario(QObject):
 
@@ -167,6 +210,10 @@ class Inventario(QObject):
 
         self.inventario_signal.emit(self.inventario)
 
+    def recibir(self, data):
+        self.inventario[data][1] += 1
+        self.enviar_inventario()
+
 
 
 class Personaje(QObject):
@@ -174,11 +221,13 @@ class Personaje(QObject):
     actualiza_personaje_signal = pyqtSignal(str)
     actualiza_window_signal = pyqtSignal(dict)
     signal_casa_tienda = pyqtSignal(str)
+    signal_movimiento = pyqtSignal(list)
 
     def __init__(self, x, y):
         super().__init__()
 
         self.mapa = {}
+
         self.direction = 'R'
         self.energia = ENERGIA_JUGADOR
         self.monedas = MONEDAS_INICIALES
@@ -191,6 +240,7 @@ class Personaje(QObject):
         self.actualiza_personaje_signal.connect(self.move)
         self.lista_no_caminable = None
         self.axe = False
+        self.coordenadas_no = []
 
 
     def init_celdas(self):
@@ -207,16 +257,16 @@ class Personaje(QObject):
                 self.casa.append((x, y))
 
     def move(self, event):
-        if event == 'R':
+        if event == 'R' and (self.x + VEL_MOVIMIENTO, self.y) not in self.coordenadas_no:
             self.direction = 'R'
             self.x += VEL_MOVIMIENTO
-        elif event == 'L':
+        elif event == 'L' and (self.x - VEL_MOVIMIENTO, self.y) not in self.coordenadas_no:
             self.direction = 'L'
             self.x -= VEL_MOVIMIENTO
-        elif event == 'U':
+        elif event == 'U' and (self.y - VEL_MOVIMIENTO, self.x) not in self.coordenadas_no:
             self.direction = 'U'
             self.y -= VEL_MOVIMIENTO
-        elif event == 'D':
+        elif event == 'D' and (self.y + VEL_MOVIMIENTO, self.x) not in self.coordenadas_no:
             self.direction = 'D'
             self.y += VEL_MOVIMIENTO
 
@@ -233,8 +283,11 @@ class Personaje(QObject):
         self.actualiza_juego()
         opcion = self.check_casilla()
 
+        self.signal_movimiento.emit([self.x, self.y])
+
+
         if opcion != None:
-            
+
             self.signal_casa_tienda.emit(opcion)
 
 
@@ -270,9 +323,19 @@ class Personaje(QObject):
                     and self.y in range(30*coordenadas[1], 31*coordenadas[1] + 5):
                 return 'tienda'
 
+    def load_lista_no_caminable(self):
+        for cord in self.lista_no_caminable:
 
+            self.coordenadas_no.append((30 * cord[0] + 10, 30 * cord[1] + 10))
+            self.coordenadas_no.append((30 * cord[0], 30 * cord[1]))
+            self.coordenadas_no.append((30 * cord[0] - 10, 30 * cord[1] - 10 ))
+            self.coordenadas_no.append((30 * cord[0] + 10, 30 * cord[1]))
+            self.coordenadas_no.append((30 * cord[0] - 10, 30 * cord[1]))
+            self.coordenadas_no.append((30 * cord[0], 30 * cord[1] + 10))
+            self.coordenadas_no.append((30 * cord[0], 30 * cord[1] - 10))
 
-
+    def load_lista_collectable(self, data):
+        self.coordenadas_collectable = data
 
 
 
