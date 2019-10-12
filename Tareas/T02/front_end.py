@@ -1,16 +1,13 @@
-import sys
+
 import os
 import parametros_generales
 from extras import DropLabelBacan, DraggableLabel, DropLabel, QLabelBacan, genera_cultivo_widget
-import time
-from threading import Thread
 from back_end import Personaje, Inventario, Tienda
-from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel,
-                             QLineEdit, QHBoxLayout, QVBoxLayout, QSpinBox, QFrame, QMainWindow,
-                             QGridLayout, QDockWidget, QStackedWidget, QProgressBar, QShortcut)
-from PyQt5.QtGui import QFont, QColor, QDrag, QPixmap, QPainter, QKeySequence
-from random import randint
-from PyQt5.QtCore import pyqtSignal, QMimeData, Qt
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel,
+                             QLineEdit, QHBoxLayout, QVBoxLayout,
+                             QGridLayout, QProgressBar, QShortcut)
+from PyQt5.QtGui import  QPixmap, QKeySequence
+from PyQt5.QtCore import pyqtSignal, Qt
 
 
 

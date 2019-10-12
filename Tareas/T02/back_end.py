@@ -1,4 +1,3 @@
-import os
 from random import random, choice
 from extras import Reloj, QLabelBacan
 from PyQt5.QtCore import QObject, pyqtSignal, QTimer
