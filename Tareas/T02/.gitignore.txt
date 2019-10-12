@@ -1,0 +1,8 @@
+parametros_acciones.py
+parametros_plantas.py
+parametros_precios.py
+Enunciado.pdf
+mapas
+sprites
+.idea
+__pycache__
