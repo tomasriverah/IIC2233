@@ -69,6 +69,7 @@ class QLabelBacan(QLabel):
 
     add_inventario_signal = pyqtSignal(int)
     accion = pyqtSignal()
+    recolecta = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -95,6 +96,7 @@ class QLabelBacan(QLabel):
                 and self.recolectable == True:
             self.hide()
             self.add_inventario_signal.emit(self.tipo)
+            self.recolecta.emit()
 
     def artichoke(self):
         pixeles = QPixmap(parametros_generales.DICCIONARIO_TIENDA['alcachofa'][0])

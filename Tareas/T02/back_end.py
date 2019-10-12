@@ -188,6 +188,8 @@ class Crop(Celda):
 
 
 
+
+
 class Inventario(QObject):
 
     inventario_signal = pyqtSignal(dict)
@@ -344,6 +346,9 @@ class Personaje(QObject):
 
     def worka(self):
         self.energia -= parametros_acciones.ENERGIA_HERRAMIENTA
+
+    def workb(self):
+        self.energia -= parametros_acciones.ENERGIA_RECOGER
 
     def max_energy(self):
         self.energia = ENERGIA_JUGADOR

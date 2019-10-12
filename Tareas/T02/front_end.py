@@ -401,6 +401,7 @@ class VentanaJuego(QWidget):
             self.celda.setScaledContents(True)
             self.grid.addWidget(self.celda, y, x, 0, 0)
             self.celda.add_inventario_signal.connect(self.inventario.recibir)
+            self.celda.recolecta.connect(self.personaje_back.workb)
 
         if dicc['arbol']:
             x, y = dicc['arbol'].coordenadas
@@ -419,6 +420,7 @@ class VentanaJuego(QWidget):
             self.grid.addWidget(self.celda, y, x, 0, 0)
             self.celda.add_inventario_signal.connect(self.inventario.recibir)
             self.celda.accion.connect(self.personaje_back.worka)
+            self.celda.recolecta.connect(self.personaje_back.workb)
 
 
 
