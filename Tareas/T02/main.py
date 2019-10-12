@@ -3,27 +3,22 @@ from front_end import VentanaInicial, VentanaPrincipal
 import sys
 from PyQt5.QtWidgets import QApplication
 
-app = QApplication(sys.argv)
-
-ventana = VentanaInicial()
-ventana.show()
-
-game = Juego()
-
-ventana_principal = VentanaPrincipal(game)
 
 
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
 
+    ventana = VentanaInicial()
+    ventana.show()
 
-ventana.partida_signal.connect(game.recibir_mapa)
-ventana.partida_signal.connect(ventana_principal.cargar)
+    game = Juego()
 
-ventana_principal.v_juego.signal_v_juego.connect(game.recibir_update)
+    ventana_principal = VentanaPrincipal(game)
 
+    ventana.partida_signal.connect(game.recibir_mapa)
+    ventana.partida_signal.connect(ventana_principal.cargar)
 
-game.enviar_signal.connect(ventana_principal.v_juego.recibir)
+    ventana_principal.v_juego.signal_v_juego.connect(game.recibir_update)
 
-
-
-
-sys.exit(app.exec())
+    game.enviar_signal.connect(ventana_principal.v_juego.recibir)
+    sys.exit(app.exec_())

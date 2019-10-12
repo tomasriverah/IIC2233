@@ -68,6 +68,7 @@ def genera_cultivo_widget(tipo):
 class QLabelBacan(QLabel):
 
     add_inventario_signal = pyqtSignal(int)
+    accion = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -82,10 +83,12 @@ class QLabelBacan(QLabel):
             pixeles = QPixmap(parametros_generales.DICCIONARIO_INVENTARIO[6])
             self.setPixmap(pixeles)
             self.recolectable = True
+            self.accion.emit()
 
     def areate(self, b):
         pixeles =  QPixmap(parametros_generales.DICCIONARIO_IMAGENES['C'])
         self.setPixmap(pixeles)
+
 
     def recoleccion(self, pos_personaje):
         if self.x*30 == roundup(pos_personaje[0]) and self.y*30 == roundup(pos_personaje[1])\
@@ -151,7 +154,11 @@ class DropLabel(QLabel):
 
         self.send_crops.emit([self.coordenadas, semilla])
 
+
 class DropLabelBacan(DropLabel):
+
+    accion = pyqtSignal()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setAcceptDrops(False)
@@ -161,7 +168,7 @@ class DropLabelBacan(DropLabel):
         self.setAcceptDrops(True)
         pixeles = QPixmap(parametros_generales.DICCIONARIO_IMAGENES['C'])
         self.setPixmap(pixeles)
-
+        self.accion.emit()
 'https://stackoverflow.com/questions/34001496/how-do-i-round-up-a-number-to-the-nearest-10-in-python-3-4-0'
 
 def roundup(x, n=10):

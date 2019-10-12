@@ -3,8 +3,9 @@ from random import random, choice
 from extras import Reloj, QLabelBacan
 from PyQt5.QtCore import QObject, pyqtSignal, QTimer
 from parametros_generales import (VEL_MOVIMIENTO, ENERGIA_JUGADOR, MONEDAS_INICIALES, PROB_ARBOL,
-                                  PROB_ORO, DICCIONARIO_TIENDA)
+                                  PROB_ORO, DICCIONARIO_TIENDA, ENERGIA_DORMIR, DINERO_TRAMPA)
 import parametros_plantas
+import parametros_acciones
 
 class Juego(QObject):
 
@@ -186,6 +187,7 @@ class Crop(Celda):
 
 
 
+
 class Inventario(QObject):
 
     inventario_signal = pyqtSignal(dict)
@@ -198,6 +200,7 @@ class Inventario(QObject):
                        3 : ['hacha', 0],
                        6 : ['leña', 0],
                        7 : ['oro', 0],
+                       8 : ['ticket',0]
                        }
 
 
@@ -317,6 +320,7 @@ class Personaje(QObject):
 
             if self.x in range(30*coordenadas[0], 31*coordenadas[0]) \
                     and self.y in range(30*coordenadas[1], 31*coordenadas[1]):
+                self.energia = min(ENERGIA_JUGADOR, self.energia + ENERGIA_DORMIR )
                 return 'casa'
         for coordenadas in self.tienda:
             if self.x in range(30*coordenadas[0], 31*coordenadas[0] + 5) \
@@ -338,6 +342,14 @@ class Personaje(QObject):
         self.coordenadas_collectable = data
 
 
+    def worka(self):
+        self.energia -= parametros_acciones.ENERGIA_HERRAMIENTA
+
+    def max_energy(self):
+        self.energia = ENERGIA_JUGADOR
+
+    def gimme_the_money(self):
+        self.monedas += DINERO_TRAMPA
 
 class Tienda(QObject):
 

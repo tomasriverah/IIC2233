@@ -7,8 +7,8 @@ from threading import Thread
 from back_end import Personaje, Inventario, Tienda
 from PyQt5.QtWidgets import (QApplication, QWidget, QPushButton, QLabel,
                              QLineEdit, QHBoxLayout, QVBoxLayout, QSpinBox, QFrame, QMainWindow,
-                             QGridLayout, QDockWidget, QStackedWidget, QProgressBar)
-from PyQt5.QtGui import QFont, QColor, QDrag, QPixmap, QPainter
+                             QGridLayout, QDockWidget, QStackedWidget, QProgressBar, QShortcut)
+from PyQt5.QtGui import QFont, QColor, QDrag, QPixmap, QPainter, QKeySequence
 from random import randint
 from PyQt5.QtCore import pyqtSignal, QMimeData, Qt
 
@@ -120,6 +120,14 @@ class VentanaPrincipal(QWidget):
 
 
         self.setLayout(vbox)
+
+
+        self.shortcut_energia = QShortcut(QKeySequence(Qt.Key_K, Qt.Key_I, Qt.Key_P), self)
+        self.shortcut_energia.activated.connect(self.personaje_back.max_energy)
+
+        self.shortcut_dinero = QShortcut(QKeySequence(Qt.Key_M, Qt.Key_N, Qt.Key_Y), self)
+        self.shortcut_dinero.activated.connect(self.personaje_back.gimme_the_money)
+
 
     def init_signals(self):
         self.update_character_signal = self.personaje_back.actualiza_personaje_signal
@@ -289,6 +297,7 @@ class VentanaJuego(QWidget):
                 self.cell.coordenadas = (x, y)
                 self.cell.mousePressEvent = self.cell.areate
                 self.cell.setFixedSize(30, 30)
+                self.cell.accion.connect(self.personaje_back.worka)
                 pixeles = QPixmap(parametros_generales.DICCIONARIO_IMAGENES['O'])
 
 
@@ -392,6 +401,7 @@ class VentanaJuego(QWidget):
             self.celda.setScaledContents(True)
             self.grid.addWidget(self.celda, y, x, 0, 0)
             self.celda.add_inventario_signal.connect(self.inventario.recibir)
+
         if dicc['arbol']:
             x, y = dicc['arbol'].coordenadas
             self.celda = QLabelBacan(self)
@@ -408,6 +418,7 @@ class VentanaJuego(QWidget):
             self.celda.mouseDoubleClickEvent = self.celda.escondete
             self.grid.addWidget(self.celda, y, x, 0, 0)
             self.celda.add_inventario_signal.connect(self.inventario.recibir)
+            self.celda.accion.connect(self.personaje_back.worka)
 
 
 
@@ -519,6 +530,7 @@ class VentanaTienda(QWidget):
 
     def init_gui(self):
         self.setWindowTitle('Tienda')
+        self.setGeometry(1300,250, 0,0 )
         self.setFixedSize(300, 700)
 
         vbox = QVBoxLayout(self)
@@ -568,9 +580,3 @@ class VentanaTienda(QWidget):
 
 
 
-if __name__ == '__main__':
-    app = QApplication([])
-    ventana = VentanaInicial()
-
-    ventana.show()
-    sys.exit(app.exec_())

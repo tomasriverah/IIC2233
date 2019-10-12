@@ -56,6 +56,8 @@ DICCIONARIO_TIENDA = {'semilla_choclo' : [os.path.join(PATH_IMG_CULTIVOS, 'chocl
                                 parametros_precios.PRECIO_LEÑA],
                       'oro' : [os.path.join('sprites', 'recursos', 'gold.png'),
                                parametros_precios.PRECIO_ORO],
+                      'ticket' : [os.path.join('sprites', 'otros', 'ticket.png'),
+                               parametros_precios.PRECIO_TICKET]
 }
 
 DICCIONARIO_INVENTARIO = {0 : os.path.join(PATH_IMG_CULTIVOS, 'choclo', 'seeds.png'),
@@ -82,3 +84,7 @@ ENERGIA_JUGADOR = 100
 PROB_ORO = 0.5
 
 PROB_ARBOL = 0.7
+
+ENERGIA_DORMIR = 20
+
+DINERO_TRAMPA = 2500
