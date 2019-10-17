@@ -30,7 +30,7 @@ class Pintogram:
         usuarios = cargar_archivos(ruta_red)
         for usuario in usuarios:
             user = Usuario(usuario[0], usuario[1])
-            user.seguidos.append(usuario[2])
+            user.seguidos = usuario[2]
             self.usuarios[user.id] = user
 
     def unfollow(self, id_seguidor, id_seguido):
@@ -39,11 +39,20 @@ class Pintogram:
 
     def mis_seguidos(self, id_usuario):
         # Método que retorna los seguidores de un usuario
-        return self.usuarios[id_usuario].seguidos
+        return len(self.usuarios[id_usuario].seguidos)
 
     def distancia_social(self, id_usuario_1, id_usuario_2):
         # Método que retorna la "distancia social" de dos usuarios
-        pass
+        visitados = []
+        stack = [self.usuarios[id_usuario_1]]
+        while len(stack) > 0:
+            persona = stack.pop()
+            if persona not in visitados:
+                visitados.append(persona)
+                for vecino in persona.seguidos:
+                    if vecino not in visitados:
+                        stack.append(self.usuarios[vecino])
+        return len(distancia)
 
 
 if __name__ == "__main__":
@@ -52,5 +61,6 @@ if __name__ == "__main__":
     print(pintogram.mis_seguidos("1"))
     print(pintogram.mis_seguidos("3"))
     print(pintogram.distancia_social("3", "5"))
+    print(pintogram.distancia_social("2", "4"))
 
 # Puedes agregar más consultas y utilizar los demás archivos para probar tu código
