@@ -70,10 +70,8 @@ class Servidor:
 
         largo_msje = len(mensaje_codificado)
 
-        # 1. Enviar el tamaño del archivo/
-        # (int.to_bytes transforma un entero en una cantidad de bytes por el primer parámetro)
         self.socket_cliente.sendall(largo_msje.to_bytes(4, byteorder='big'))
-        # 2. Enviar el archivo.
+
         self.socket_cliente.sendall(mensaje_codificado)
 
 
